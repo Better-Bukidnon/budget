@@ -2,11 +2,18 @@
   // Cloudflare Workers, static assets only: no Worker code, no bindings.
   // `npm run deploy:cloudflare` builds and deploys. Rename before deploying.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "transparency-portal",
+  "name": "bukidnon-transparency-portal",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
     // Client-side routes (/districts, /projects/...) serve index.html.
     "not_found_handling": "single-page-application"
+  },
+  // Bukidnon: production is the top level (built from `main`); staging is built from
+  // `develop` with `npx wrangler deploy --env staging`. See docs/architecture.md#deploy.
+  "env": {
+    "staging": {
+      "name": "bukidnon-transparency-portal-staging"
+    }
   }
 }
