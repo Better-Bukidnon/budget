@@ -58,6 +58,8 @@ export interface PortalConfig {
   logo?: string;
   /** Canonical URL of this deployment, for link previews. */
   siteUrl?: string;
+  /** The description in link previews and search results. Defaults to a sentence built from the name. */
+  description?: string;
   /**
    * The blue "Create your own transparency portal" strip above the masthead,
    * linking to the source on GitHub. On unless set to false.

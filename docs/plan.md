@@ -103,8 +103,11 @@ decisions are recorded in this file.
   (e.g. "Davao–Bukidnon Road"); add exclusions with reasons (#8). 1 FY2027 line and 417
   DPWH program families (2020–2026) excluded; see
   [bukidnon-reference.md](bukidnon-reference.md#namesake-review).
-- [ ] Branding (name, colours, no official seals per D1), `siteUrl`. (The `wrangler.jsonc`
-  name was set in #6.)
+- [x] Branding (#9): `siteUrl` is the production Worker's address, and the link-preview
+  description opens with "Independent and unofficial." No logo (D1: no official seals or
+  LGU logos); the template's colours and generic favicon stay. The "Create your own
+  transparency portal" strip is off; the masthead and footer still link to the template.
+  (The `wrangler.jsonc` name was set in #6.)
 - [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`
   ([architecture.md](architecture.md#deploy)) and release v0.1 (#10).
 

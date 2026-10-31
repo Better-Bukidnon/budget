@@ -23,6 +23,17 @@ export default defineConfig({
   // Independent / civil society, not the provincial government (decision D1).
   // A placeholder: settle the real name and contact before the v0.1 release (#10).
   operator: { name: 'Independent volunteers' },
+  // Branding (#9). No logo: D1 rules out official seals and LGU logos. The canonical
+  // URL is the production Worker, live from the v0.1 release (#10); a domain comes at
+  // launch (D7, #36).
+  siteUrl: 'https://bukidnon-transparency-portal-production.dmncdlprt.workers.dev',
+  // Link previews say up front that this is not the provincial government's site (D1),
+  // in the words of the Budget API's own notice.
+  description:
+    'Independent and unofficial. Every FY 2027 project for Bukidnon in the NEP and the House bill (House Bill 10858), with the source page for each, and the enacted budgets 2020–2026. Data from the BetterGov.ph Budget API.',
+  // The template's "Create your own transparency portal" strip is for LGUs and offices,
+  // not residents. The masthead's "Build your own" link and the footer still credit it.
+  buildYourOwnStrip: false,
   scope: {
     offices: [
       'Bukidnon 1st District Engineering Office',
