@@ -62,6 +62,9 @@ Keep template files as close to upstream as possible. New code goes in new files
 
 ```text
 portal.config.ts               Bukidnon values in the template's own shape (offices, places, districts, exclusions)
+src/bukidnon/exclusions.ts     Namesake exclusions passed to portal.config.ts: 2027 by hand,
+                               2020–2026 generated into exclusions-gaa.ts by
+                               scripts/bukidnon/review-namesakes.ts
 src/bukidnon/config.ts         Bukidnon-only settings: DepEd division codes, SUC agency ids,
                                operating-unit allowlist, town slugs ↔ display names, namesake rules
 src/bukidnon/api/              Clients for the extra sources: nep.ts (rollups), gaa-tree.ts (hierarchy),

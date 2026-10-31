@@ -13,6 +13,7 @@
  * 4th. See docs/bukidnon-reference.md.
  */
 import { defineConfig } from './src/config';
+import { exclusions } from './src/bukidnon/exclusions';
 
 export default defineConfig({
   id: 'bukidnon-province',
@@ -31,7 +32,8 @@ export default defineConfig({
     ],
     places: [{ label: 'Bukidnon', region: 'X' }],
     districts: ['leg:bukidnon:1st', 'leg:bukidnon:2nd', 'leg:bukidnon:3rd', 'leg:bukidnon:4th'],
-    exclude: [],
+    // Namesakes: lines found by name that are elsewhere, each with its reason (#8).
+    exclude: exclusions,
   },
   reporting: { enabled: false },
 });

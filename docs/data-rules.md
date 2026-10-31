@@ -38,7 +38,11 @@ data adds.
     | Valencia | Valencia, Bohol; Valencia, Negros Oriental; Estero de Valencia (Manila); Valencia Creek (QC) |
     | Don Carlos | Don Carlos Gothong Memorial NHS (Cebu) |
     | Malitbog | Malitbog, Southern Leyte |
-    | Bukidnon | "Davao–Bukidnon Road" lines under Davao DEOs, roads named after Bukidnon outside it |
+    | Bukidnon | Roads named after Bukidnon outside it: Davao–Bukidnon Rd (Davao City), Bukidnon–Cotabato Rd and Paco–Roxas–Arakan Valley–Jct Davao–Bukidnon Rd (Cotabato), CDO–Airport–Bukidnon Rd (Cagayan de Oro), the East–West lateral road "connecting Agusan del Sur to Bukidnon" (Agusan, Surigao del Sur), Bukidnon–Compostela Valley Rd packages in Davao del Norte and Davao de Oro |
+
+    The 2027 lists carry a region, so the region rule drops most of these. The 2020–2026 GAA
+    carries none, so they're excluded by hand, each with the office or name that places it
+    elsewhere: [bukidnon-reference.md](bukidnon-reference.md#namesake-review).
 
 11. **DEO numbers ≠ district numbers.** Always label an office with the district it serves
     ("Bukidnon 1st DEO, serving the 2nd District").

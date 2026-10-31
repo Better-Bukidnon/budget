@@ -65,6 +65,7 @@
 | `GET /nep/2027/rollups/region?code=10&by=department` | Region X by department, as context for "Bukidnon within Northern Mindanao" |
 | `GET /hearings/search?q=…` | What was said about Bukidnon, Malaybalay, Valencia, CMU and BukSU in budget hearings, with video links |
 | `GET /hearings/{video_id}/topics/{index}` | One topic's record, for the hearing detail view |
+| `GET /gaa/years/{y}/departments/18/children?level=fpaps&parent=18-001` → `level=operating_units&parent=<fpap>` | Namesake review only (not at runtime): which DPWH office a 2020–2026 line naming Bukidnon is listed under. See [DPWH lines by office](#dpwh-lines-by-office-20202026) |
 
 The hgab `office` filter takes the **published** name ("Bukidnon 1st District Engineering
 Office"), not the card name ("Bukidnon 1st DEO").
@@ -75,7 +76,8 @@ Office"), not the card name ("Bukidnon 1st DEO").
    plans `GET /hgab/2027/places/{psgc}/projects`; when it ships, municipality pages
    should switch to it.
 2. **GAA has no place or office filter.** DPWH money per office per year comes from the
-   district card's `years[]`, not from GAA routes.
+   district card's `years[]`, not from GAA routes. One line's office can be looked up in
+   the hierarchy route ([below](#dpwh-lines-by-office-20202026)), but not filtered on.
 3. **Use `programs`, not `/gaa/search`** for place searches. Search caps at 100 results
    with no paging.
 4. **In GAA program `years`, a year counts only where `amount > 0`.** `count` carries old
@@ -85,6 +87,38 @@ Office"), not the card name ("Bukidnon 1st DEO").
 6. **FY2027 GAA isn't enacted yet** (House bill at third reading as of this writing).
    Plan for a `/gaa` 2027 year to appear and for the House-vs-NEP pages to gain an
    enacted column.
+
+## DPWH lines by office (2020–2026)
+
+The GAA has no office filter (limit 2), but the hierarchy route does say which office one
+line is listed under. That's enough to check where a line found by name sits, one line at a
+time. Used by `scripts/bukidnon/review-namesakes.ts` at review time, never by pages.
+
+```text
+GET /gaa/years/{y}/departments/18/children?level=fpaps&parent=18-001&limit=500[&cursor=…]
+    → every DPWH program/activity/project (FPAP) that year with amount > 0
+      (about 25,000 a year, 37–57 pages; no text filter, so filter client-side)
+GET /gaa/years/{y}/departments/18/children?level=operating_units&parent=<fpap id>
+    → the office(s) it is listed under, with the amount under each
+```
+
+- **What it returns for Bukidnon** (checked 2026-10-31): 3,526 FPAP-years whose description
+  contains "Bukidnon". Offices seen: Bukidnon 1st–4th DEOs (codes `1800147`, `1800148`,
+  `1800149`, `1800199`), Central Office (`0100000`), Regional Office X and IX, and DEOs
+  outside the province: Davao City 2nd (`1800161`), Davao City, Davao del Norte,
+  Cotabato 1st–3rd, Cagayan de Oro City 1st and 2nd, Misamis Oriental 1st and 2nd,
+  Agusan del Norte, Lanao del Norte 2nd.
+- **Joining to program families:** a family (`/gaa/departments/18/programs`) is one name in
+  one agency; its `fam_key` is `<agency>|<name>` with whitespace collapsed, lower case, and
+  everything but letters, digits and spaces removed. FPAP descriptions normalised the same
+  way match all 3,296 Bukidnon families.
+- **Caveats:** about 4,000 requests for one full review (pages are sequential per year;
+  the script caches them under `node_modules/.cache/`). `include_zero=true` adds ₱0 lines
+  and once returned HTTP 500 mid-way through 2025; it isn't needed, since a GAA year only
+  counts where the amount is above zero. The page size caps at 500.
+- **Central Office lines** carry no place: the office only says DPWH headquarters manages
+  them. Their names, and the offices that list other sections of the same road, decide
+  (see [bukidnon-reference.md](../bukidnon-reference.md#namesake-review)).
 
 ## Example: one district card
 
