@@ -80,7 +80,9 @@ scripts/check-bukidnon.ts      extra reconciliations, chained into npm run check
 
 Template files we expect to touch (keep the edits small): `src/App.tsx` (routes),
 `src/components/Chrome.tsx` (navigation), `src/pages/About.tsx` (list the extra
-sources), `package.json` (scripts), `wrangler.jsonc` (name).
+sources), `package.json` (scripts), `wrangler.jsonc` (name). Already touched:
+`src/config.ts` and `vite.config.ts` (#9), which add an optional `description` field so
+link previews can say the portal is independent. It is a candidate to send upstream.
 
 ## Data flow
 
@@ -160,7 +162,7 @@ repository holds no Cloudflare token and no deploy workflow.
 | Worker | Role | Production branch | Build command | Deploy command | URL |
 | --- | --- | --- | --- | --- | --- |
 | `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
-| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | Not created yet (see below) |
+| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | Not created yet (see below); will be <https://bukidnon-transparency-portal-production.dmncdlprt.workers.dev> |
 
 Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`.
 
@@ -182,11 +184,16 @@ and production URLs serve `index.html` either way.
 - `--env=""` selects the top-level (development) config. Without it, wrangler warns that
   an `env` block exists but no environment was chosen.
 - The build image runs Node 24 by default and CI runs Node 22. Both satisfy `engines`.
-- The development portal is not for the public: until Phase 1 (#7) it still shows the
-  template's Province of Bohol config.
+- The development portal is not for the public.
 - Workers Builds has no schedule. The nightly refresh (`snapshot → check → build →
   deploy`, #25) needs a scheduled trigger, chosen in #25.
-- Set `siteUrl` for link previews once the domain is known.
+- `siteUrl` in `portal.config.ts` is the production address (#9), so every build,
+  development included, writes it as the canonical URL and `og:url`. The address
+  resolves once the production Worker exists (#10). Change it when the domain is added
+  (#36).
+- The template writes one canonical URL, the site root, into `index.html`, so every page
+  names the home page as canonical, and a shared deep link previews with the home page's
+  title. Per-page metadata is #35.
 
 To create the production Worker, at the first release (#10), once `main` has the app code:
 in the dashboard go to **Workers & Pages → Create → Import a repository**, pick this
