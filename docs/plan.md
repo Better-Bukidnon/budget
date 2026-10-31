@@ -75,14 +75,18 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
 - [x] Merge the template into this folder with an `upstream` remote ([architecture.md](architecture.md#repository-setup-phase-0)). Node ≥ 22.12.
 - [ ] Settle open decisions D1–D7 (below).
 - [ ] Ask BetterGov (about.bettergov.ph / GitHub): may a third-party portal depend on
-  `api.dpwh.bettergov.ph` and `officials.bettergov.ph`? CORS? Rate limits? Can we get a
-  search2 key for PhilGEPS? Is there map geometry on a bettergov.ph host?
-- [ ] Verify CORS on the DPWH, officials and statistics APIs. Find the DPWH API's accepted
-  `status` values.
+  `api.dpwh.bettergov.ph` (undocumented) and on the dynasties map files
+  (`dynasties.bettergov.ph/data/geo/*.json.gz`, no CORS)? Is there a request budget for the
+  DPWH API? Can we get a search2 key for PhilGEPS? (CORS is answered: open on all three
+  APIs. The officials API is documented and CC0.)
+- [x] Verify CORS on the DPWH, officials and statistics APIs (all `Access-Control-Allow-Origin: *`).
+  Find the DPWH API's accepted `status` values (#4, see
+  [data-sources/](data-sources/README.md)).
 - [x] CI: `npm ci → lint → tsc → build → check` on every push and PR to `develop`/`main` (#5).
 - [ ] Cloudflare preview deploys (#6).
 - [ ] Optional for development: register the bettergov.ph MCP servers (budget, data,
-  statistics, officials) in `.mcp.json`.
+  statistics, officials) in `.mcp.json`. All four answer an MCP `initialize` over
+  streamable HTTP (checked 2026-10-31).
 
 **Exit:** the template builds and runs locally from this repo, CI is green, and the
 decisions are recorded in this file.
