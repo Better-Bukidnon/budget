@@ -54,7 +54,7 @@ board member 4, mayor 22, vice mayor 22, councilor 22. All fit in one `limit=200
 | `GET /contests?year=2025&province=bukidnon&position=…` | Governor, vice governor, board members and mayors elected in 2025 |
 | `GET /contests?year=2025&province=bukidnon&position=representative` | **Which district each town is in**: each of the 4 rows has `district` and `district_towns[]` |
 | `GET /national/2025/provinces/bukidnon` | How the province voted nationally in 2025 (senators, party lists) |
-| `GET /blocs?province=bukidnon` | Political-family blocs. **Editorial decision D5:** show or not |
+| `GET /blocs?province=bukidnon` | Political-family blocs. **Not shown** (decision D5: officials list only) |
 
 ### District per town (2025)
 

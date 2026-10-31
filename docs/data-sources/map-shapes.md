@@ -9,7 +9,7 @@
 | CORS | ❌ **No `Access-Control-Allow-Origin` header.** A browser on our domain can't fetch these files. Build time only. |
 | Caching | `Cache-Control: public, max-age=0, must-revalidate`, with an `ETag` |
 | Provenance | The site's map credits "boundaries PSGC 2023" and links to [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) (MIT licence). BetterGov's copy appears to be simplified from it. |
-| Status | ⚠️ Hosted on a bettergov.ph host, so it passes hard rule 1, but it is an undocumented site asset that could move without notice. Ask BetterGov before depending on it (Phase 0 question). Use depends on decision D4. |
+| Status | ⚠️ Hosted on a bettergov.ph host, so it passes hard rule 1, but it is an undocumented site asset that could move without notice. Ask BetterGov before depending on it (Phase 0 question, #3). Decision D4 (no basemap) allows outlines from a bettergov.ph host, so only BetterGov's answer is pending. |
 
 ## Format
 
@@ -58,7 +58,7 @@ A test can compare it with this file and with PSGC.
 
 ## How we'd use it
 
-If D4 allows outlines: download `cities/bukidnon.json.gz` and `provinces.json.gz` in the
+Once BetterGov allows it: download `cities/bukidnon.json.gz` and `provinces.json.gz` in the
 snapshot script, check the content type, unzip, keep the Bukidnon features, and write
 `public/data/bukidnon-shapes.json` with `retrieved_at` and the source URLs. The page
 draws it as SVG; no browser request goes to dynasties.bettergov.ph, so the

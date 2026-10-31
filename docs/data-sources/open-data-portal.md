@@ -31,7 +31,8 @@ inside the file.
 | Other | DOF bulletin (`docs.google.com`) · APC dynasties (`inclusivedemocracy.ph`) |
 
 **Under the project rule ("data only from bettergov.ph"), none of these files can be used
-as-is.** This is open decision D2 in [plan.md](../plan.md#open-decisions). Options:
+as-is.** Decision D2 in [plan.md](../plan.md#open-decisions) chose option 1, strict
+(2026-10-31). The options were:
 
 1. **Strict:** use the catalogue for discovery only. Features that need these files wait
    until BetterGov serves the data from a bettergov.ph API.

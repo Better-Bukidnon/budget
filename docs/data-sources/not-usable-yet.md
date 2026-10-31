@@ -13,7 +13,7 @@ ask BetterGov for. Add to this list rather than filling a gap from a non-betterg
 | `govchain.bettergov.ph` | A Cosmos-SDK chain with OCDS/OC4IDS modules (`/govchain/procurement/v1/ocds/records/{ocid}`, `/govchain/infrastructure/v1/projects_by_region/{region}`). The REST paths return a 404 page on this host. Looks experimental. | A public REST/LCD endpoint with real data |
 | `api.bettergov.ph/weather` | Only Manila, Cebu, Davao and Baguio | Not needed for the portal |
 | `hotlines.bettergov.ph`, `saln.bettergov.ph`, `taxdirectory.bettergov.ph` | No public API found; no Bukidnon entries in the bundles | An API, if these become relevant |
-| `data.bettergov.ph` files | Catalogue is on bettergov.ph; every file is hosted elsewhere (HF, GitHub, gov sites) | Decision D2 in [plan.md](../plan.md#open-decisions) |
+| `data.bettergov.ph` files | Catalogue is on bettergov.ph; every file is hosted elsewhere (HF, GitHub, gov sites) | BetterGov serving the data on a bettergov.ph host. Decision D2 in [plan.md](../plan.md#open-decisions) (2026-10-31) is strict: BetterGov's copies on Hugging Face and GitHub don't count. |
 
 ## Data gaps (no bettergov.ph source has it)
 
@@ -26,7 +26,7 @@ ask BetterGov for. Add to this list rather than filling a gap from a non-betterg
 | **LGU own-source finances from an API** | Province and town income/expenditure (BLGF) is only on blgf.gov.ph | A BLGF endpoint on bettergov.ph |
 | **Budget execution (obligations, disbursements) by place** | Only appropriations and contract amounts | Out of scope for the API today; `/budget-cycle` is department-level only |
 | **FY2027 enacted GAA** | Not enacted yet | Expected once the budget is signed; the API will need a `/gaa` 2027 year |
-| **DPWH API terms** | CORS is open and no rate limit showed, but nothing is published, so the infrastructure tracker rests on an undocumented API | Confirmation that third-party portals may depend on `api.dpwh.bettergov.ph`, and any request budget |
+| **DPWH API terms** | CORS is open and no rate limit showed, but nothing is published. Per decision D3 the infrastructure tracker, the contracts map and contracts on town pages wait for BetterGov's answer | Confirmation that third-party portals may depend on `api.dpwh.bettergov.ph`, and any request budget |
 
 ## Resolved
 

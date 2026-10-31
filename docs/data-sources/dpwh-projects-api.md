@@ -9,8 +9,8 @@
 | Caching | None. `cf-cache-status: DYNAMIC`, no `Cache-Control`. List calls took 0.5–8 s. |
 | Rate limits | None seen. No rate-limit headers; a burst of 30 concurrent requests all returned `200`. Not a promise: the terms are unpublished. |
 | Terms | None published. `robots.txt` is Cloudflare's managed file: `Content-Signal: search=yes,ai-train=no,use=reference`, and it blocks AI crawlers by name. |
-| Bulk alternative | "DPWH Infrastructure Transparency Dataset" on [data.bettergov.ph](open-data-portal.md) |
-| Status | ⚠️ Works and is CORS-open, but undocumented. Confirm with BetterGov that third-party portals may depend on it before launch (Phase 0). |
+| Bulk alternative | "DPWH Infrastructure Transparency Dataset" on [data.bettergov.ph](open-data-portal.md). Hosted on Hugging Face, so not usable (decision D2 is strict). |
+| Status | ⚠️ Works and is CORS-open, but undocumented. Per decision D3 the portal doesn't build on it until BetterGov confirms third-party portals may depend on it (#3). |
 
 ## Why it matters
 
