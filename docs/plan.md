@@ -95,9 +95,10 @@ decisions are recorded in this file.
 
 ### Phase 1: Bohol parity for Bukidnon (config only)
 
-- [ ] `portal.config.ts`: `id: bukidnon-province`, `kind: province`, the 4 published DEO
+- [x] `portal.config.ts`: `id: bukidnon-province`, `kind: province`, the 4 published DEO
   names, place `{ label: 'Bukidnon', region: 'X' }`, districts `leg:bukidnon:1st…4th`,
-  operator per D1 (independent; name and contact to fill in).
+  operator per D1 (#7). The operator is a placeholder, "Independent volunteers", until the
+  real name and contact are settled before the v0.1 release (#10).
 - [ ] `npm run check -- --verbose`: review lines found only by name under another office
   (e.g. "Davao–Bukidnon Road"); add exclusions with reasons.
 - [ ] Branding (name, colours, no official seals per D1), `siteUrl`. (The `wrangler.jsonc`
