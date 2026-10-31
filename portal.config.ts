@@ -21,12 +21,11 @@ export default defineConfig({
   name: 'Province of Bukidnon',
   shortName: 'Bukidnon',
   // Independent / civil society, not the provincial government (decision D1).
-  // A placeholder: settle the real name and contact before the v0.1 release (#10).
-  operator: { name: 'Independent volunteers' },
+  // No link or contact yet: betterbukidnon.org is not a site yet.
+  operator: { name: 'Better Bukidnon' },
   // Branding (#9). No logo: D1 rules out official seals and LGU logos. The canonical
-  // URL is the production Worker, live from the v0.1 release (#10); a domain comes at
-  // launch (D7, #36).
-  siteUrl: 'https://bukidnon-transparency-portal-production.dmncdlprt.workers.dev',
+  // URL is the public domain, which the production Worker serves (D7, wrangler.jsonc).
+  siteUrl: 'https://budget.betterbukidnon.org',
   // Link previews say up front that this is not the provincial government's site (D1),
   // in the words of the Budget API's own notice.
   description:

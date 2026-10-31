@@ -97,19 +97,20 @@ decisions are recorded in this file.
 
 - [x] `portal.config.ts`: `id: bukidnon-province`, `kind: province`, the 4 published DEO
   names, place `{ label: 'Bukidnon', region: 'X' }`, districts `leg:bukidnon:1st…4th`,
-  operator per D1 (#7). The operator is a placeholder, "Independent volunteers", until the
-  real name and contact are settled before the v0.1 release (#10).
+  operator per D1 (#7). The operator is "Better Bukidnon" (settled 2026-11-01); no link
+  or contact yet.
 - [x] `npm run check -- --verbose`: review lines found only by name under another office
   (e.g. "Davao–Bukidnon Road"); add exclusions with reasons (#8). 1 FY2027 line and 417
   DPWH program families (2020–2026) excluded; see
   [bukidnon-reference.md](bukidnon-reference.md#namesake-review).
-- [x] Branding (#9): `siteUrl` is the production Worker's address, and the link-preview
-  description opens with "Independent and unofficial." No logo (D1: no official seals or
-  LGU logos); the template's colours and generic favicon stay. The "Create your own
-  transparency portal" strip is off; the masthead and footer still link to the template.
-  (The `wrangler.jsonc` name was set in #6.)
+- [x] Branding (#9): `siteUrl` is the public domain, https://budget.betterbukidnon.org,
+  and the link-preview description opens with "Independent and unofficial." No logo (D1:
+  no official seals or LGU logos); the template's colours and generic favicon stay. The
+  "Create your own transparency portal" strip is off; the masthead and footer still link
+  to the template. (The `wrangler.jsonc` name was set in #6.)
 - [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`
-  ([architecture.md](architecture.md#deploy)) and release v0.1 (#10).
+  ([architecture.md](architecture.md#deploy)); its first deploy takes
+  `budget.betterbukidnon.org` from the development Worker. Release v0.1 (#10).
 
 **Exit:** live portal; the About page counts match
 [bukidnon-reference.md](bukidnon-reference.md) (57 office lines; 183/8/5/0 by name);
@@ -174,13 +175,13 @@ All seven were decided on 2026-10-31 (#2). To reopen one, edit its row and say w
 
 | # | Question | Options | Decision |
 | --- | --- | --- | --- |
-| D1 | **Who operates the portal?** (footer, contact, logo, tone) | Independent/civil society · provincial or city government · a school or university | **Decided 2026-10-31:** independent / civil society. No official seals or LGU logos; the "independent and unofficial" notice stays. The operator's name and contact are set with the config (#7). |
+| D1 | **Who operates the portal?** (footer, contact, logo, tone) | Independent/civil society · provincial or city government · a school or university | **Decided 2026-10-31:** independent / civil society. No official seals or LGU logos; the "independent and unofficial" notice stays. The operator's name and contact are set with the config (#7): "Better Bukidnon" (2026-11-01), no contact yet. |
 | D2 | **Do BetterGov-published files count as "from bettergov.ph"?** Every file in data.bettergov.ph is hosted elsewhere. | Strict (bettergov.ph hosts only) · also allow `huggingface.co/datasets/bettergovph/*` and `github.com/bettergovph/*` | **Decided 2026-10-31:** strict, only `*.bettergov.ph` hosts. The data.bettergov.ph catalogue is for discovery only. F11 and F12 wait until BetterGov serves the data on a bettergov.ph host or issues a key (#31). |
 | D3 | **Depend on the undocumented DPWH API before BetterGov confirms?** | Wait · build behind a flag | **Decided 2026-10-31:** wait. F4 (#26), the contracts map (#27) and contracts on town pages aren't started until BetterGov confirms (#3). The earlier recommendation was to build behind a flag. |
 | D4 | **Maps** | No basemap (SVG points, outlines if bettergov.ph serves them) · a tile provider (an off-domain request) | **Decided 2026-10-31:** no basemap. SVG points; town outlines only from a bettergov.ph host, drawn from a build-time copy ([map-shapes.md](data-sources/map-shapes.md)) once BetterGov allows it (#3). |
 | D5 | **Show political-family ("bloc") data** from the officials API? | Officials list only · include blocs | **Decided 2026-10-31:** officials list only. Blocs would need their own methodology page first. |
 | D6 | **Languages** | English · English + Binisaya/Cebuano labels · + Filipino | **Decided 2026-10-31:** English at launch; Binisaya/Cebuano for navigation and key labels in Phase 4 (#34). No Filipino translation. |
-| D7 | **Domain and hosting account** | `*.workers.dev` · own domain | **Decided 2026-10-31:** `*.workers.dev` on the project's Cloudflare account, deployed by Workers Builds; add a domain at launch (#36). |
+| D7 | **Domain and hosting account** | `*.workers.dev` · own domain | **Decided 2026-10-31, revised 2026-11-01:** the project's Cloudflare account, deployed by Workers Builds. The public portal is at `budget.betterbukidnon.org` from v0.1 (#10), not from launch (#36); development stays on `*.workers.dev`. |
 
 ## Risks
 

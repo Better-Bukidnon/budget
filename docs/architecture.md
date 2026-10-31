@@ -155,14 +155,15 @@ lint tooling (minimatch via eslint), with 0 in production dependencies.
 ## Deploy
 
 Cloudflare Workers static assets, as the Bohol sample is deployed: no Worker code, no
-bindings, SPA fallback in `wrangler.jsonc`. Hosted on `*.workers.dev` (decision D7).
+bindings, SPA fallback in `wrangler.jsonc`. The public portal is at
+<https://budget.betterbukidnon.org>; development stays on `*.workers.dev` (decision D7).
 **Cloudflare Workers Builds** (the dashboard's Git integration) builds and deploys, so the
 repository holds no Cloudflare token and no deploy workflow.
 
 | Worker | Role | Production branch | Build command | Deploy command | URL |
 | --- | --- | --- | --- | --- | --- |
 | `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
-| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | Not created yet (see below); will be <https://bukidnon-transparency-portal-production.dmncdlprt.workers.dev> |
+| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address). Created at the first release (see below). |
 
 Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`.
 
@@ -187,10 +188,20 @@ and production URLs serve `index.html` either way.
 - The development portal is not for the public.
 - Workers Builds has no schedule. The nightly refresh (`snapshot → check → build →
   deploy`, #25) needs a scheduled trigger, chosen in #25.
-- `siteUrl` in `portal.config.ts` is the production address (#9), so every build,
-  development included, writes it as the canonical URL and `og:url`. The address
-  resolves once the production Worker exists (#10). Change it when the domain is added
-  (#36).
+- `siteUrl` in `portal.config.ts` is the public domain (#9), so every build,
+  development included, writes it as the canonical URL and `og:url`.
+- The domain is a Custom Domain declared under `env.production` in `wrangler.jsonc`, so
+  each production deploy attaches it. The `betterbukidnon.org` zone is on the same
+  Cloudflare account. In Workers Builds, wrangler runs without a terminal and takes a
+  domain that another Worker holds without asking. Until the first production deploy,
+  the domain was attached to the development Worker by hand (checked 2026-11-01: both
+  served the same build); that deploy moves it.
+- The zone has Cloudflare Web Analytics on, so Cloudflare adds a
+  `static.cloudflareinsights.com/beacon.min.js` script to pages served on the domain.
+  It is not in the build, and the workers.dev addresses don't have it. It is a request
+  to a host other than `*.bettergov.ph`; whether it stays is part of #30. Ad blockers
+  and DNS filters block it (the console shows `ERR_NAME_NOT_RESOLVED`), which does not
+  affect the portal.
 - The template writes one canonical URL, the site root, into `index.html`, so every page
   names the home page as canonical, and a shared deep link previews with the home page's
   title. Per-page metadata is #35.
@@ -200,7 +211,7 @@ in the dashboard go to **Workers & Pages → Create → Import a repository**, p
 repository, name the Worker `bukidnon-transparency-portal-production`, and use the
 commands above. Under **Settings → Builds → Branch control**, check that the production
 branch is `main` and turn off builds for other branches, since the development Worker
-already previews them. The public domain goes on this Worker at launch (#36).
+already previews them. Its first deploy attaches `budget.betterbukidnon.org`.
 
 To deploy development by hand (rarely needed): `npx wrangler login`, then
 `npm run build && npx wrangler deploy --env=""`.
