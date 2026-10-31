@@ -1,5 +1,7 @@
 # Transparency Portal
 
+[![CI](https://github.com/DMNCDLPRT/bukidnon-transparency-portal/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/DMNCDLPRT/bukidnon-transparency-portal/actions/workflows/ci.yml?query=branch%3Adevelop)
+
 A small, forkable website that shows citizens **every FY 2027 budget project** for one
 LGU (province, city or municipality) or one DPWH district engineering office: what the
 NEP gave it, what the House bill (House Bill 10858) gives it, what was added or dropped,
