@@ -83,8 +83,9 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
   Find the DPWH API's accepted `status` values (#4, see
   [data-sources/](data-sources/README.md)).
 - [x] CI: `npm ci → lint → tsc → build → check` on every push and PR to `develop`/`main` (#5).
-- [ ] Cloudflare deploys with Workers Builds: staging from `develop`, production from
-  `main` (#6, see [architecture.md](architecture.md#deploy)).
+- [ ] Cloudflare development deploy with Workers Builds: `develop` → the
+  `bukidnon-transparency-portal` Worker (#6, see [architecture.md](architecture.md#deploy)).
+  The public production Worker comes at the first release (Phase 1).
 - [ ] Optional for development: register the bettergov.ph MCP servers (budget, data,
   statistics, officials) in `.mcp.json`. All four answer an MCP `initialize` over
   streamable HTTP (checked 2026-10-31).
@@ -101,7 +102,8 @@ decisions are recorded in this file.
   (e.g. "Davao–Bukidnon Road"); add exclusions with reasons.
 - [ ] Branding (name, colours, logo only if D1 allows), `siteUrl`. (The `wrangler.jsonc`
   name was set in #6.)
-- [ ] Deploy.
+- [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`
+  ([architecture.md](architecture.md#deploy)) and release v0.1 (#10).
 
 **Exit:** live portal; the About page counts match
 [bukidnon-reference.md](bukidnon-reference.md) (57 office lines; 183/8/5/0 by name);

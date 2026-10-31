@@ -9,11 +9,12 @@
     // Client-side routes (/districts, /projects/...) serve index.html.
     "not_found_handling": "single-page-application"
   },
-  // Bukidnon: production is the top level (built from `main`); staging is built from
-  // `develop` with `npx wrangler deploy --env staging`. See docs/architecture.md#deploy.
+  // Bukidnon: the top level is the development Worker (built from `develop`); production
+  // is built from `main` with `npx wrangler deploy --env production`.
+  // See docs/architecture.md#deploy.
   "env": {
-    "staging": {
-      "name": "bukidnon-transparency-portal-staging"
+    "production": {
+      "name": "bukidnon-transparency-portal-production"
     }
   }
 }
