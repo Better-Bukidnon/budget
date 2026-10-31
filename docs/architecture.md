@@ -97,9 +97,12 @@ Two lanes:
 - **Runtime lane** for the Budget API, as the template does. It's documented, CORS-open and
   cached, and figures stay as fresh as budget.bettergov.ph.
 - **Snapshot lane** for everything else:
-  - the DPWH API is undocumented (CORS and rate limits unknown);
-  - 4,229 contracts take about 43 paged requests, too many for each visitor;
-  - officials and statistics change rarely;
+  - the DPWH API is undocumented and uncached (CORS is open, but each call takes seconds
+    and its terms are unpublished);
+  - 4,229 contracts are about 3 MB (9 requests at `limit=500`), too much for each visitor;
+  - officials and statistics change rarely, and the statistics API is `no-store` with two
+    queries at a time per server;
+  - the dynasties map files have no CORS, so a browser can't load them at all;
   - snapshots are reproducible and can be reconciled in CI.
 
   Each file carries `{ source, requests[], retrieved_at, counts }`, and the About page

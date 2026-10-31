@@ -22,8 +22,16 @@ ask BetterGov for. Add to this list rather than filling a gap from a non-betterg
 | **City/municipality code on budget lines** | Town pages rely on title text, which misses lines that don't spell the town out | `GET /api/v1/hgab/2027/places/{psgc}/projects` (on the upstream roadmap) |
 | **GAA lines by operating unit for DPWH** | A DEO's 2020–2026 project lines can't be listed, only its yearly totals | `/gaa/departments/18/objects?operating_unit=…` (upstream gap #2) |
 | **School-to-division mapping** | Schools are listed only when their name names a Bukidnon place | Division code on each DepEd operating unit, or a `parent_division` field |
-| **Map geometry on a bettergov.ph host** | No town or barangay outlines for maps | Check whether `dynasties.bettergov.ph` serves its map shapes as a file; otherwise ask BetterGov to host boundaries |
+| **Map geometry: permission, browser access, barangays** | Town and province outlines exist on `dynasties.bettergov.ph` ([map-shapes.md](map-shapes.md)), but as undocumented site files with no CORS, so build time only. No barangay outlines anywhere on bettergov.ph | Ask BetterGov whether third parties may depend on `/data/geo/*.json.gz` (or publish them as documented files); barangay outlines if town pages need them |
 | **LGU own-source finances from an API** | Province and town income/expenditure (BLGF) is only on blgf.gov.ph | A BLGF endpoint on bettergov.ph |
 | **Budget execution (obligations, disbursements) by place** | Only appropriations and contract amounts | Out of scope for the API today; `/budget-cycle` is department-level only |
 | **FY2027 enacted GAA** | Not enacted yet | Expected once the budget is signed; the API will need a `/gaa` 2027 year |
-| **Official list of Bukidnon LGUs with codes** | Town list comes from the officials API (names and slugs, no PSGC) | Check `statistics.bettergov.ph/api/classification` for PSGC |
+| **DPWH API terms** | CORS is open and no rate limit showed, but nothing is published, so the infrastructure tracker rests on an undocumented API | Confirmation that third-party portals may depend on `api.dpwh.bettergov.ph`, and any request budget |
+
+## Resolved
+
+| Was | Resolved by | Date |
+| --- | --- | --- |
+| Official list of Bukidnon LGUs with codes | PSGC `Q2_2024` on `statistics.bettergov.ph/api/classification` ([statistics-api.md](statistics-api.md#psgc-official-lgu-codes)) | 2026-10-31 |
+| Officials slug ↔ PSGC link | The dynasties town shapes carry both ([map-shapes.md](map-shapes.md)) | 2026-10-31 |
+| Source and year of the officials API's `poverty: 20.2` | PSA 2023 poverty incidence among families, also on the statistics API ([officials-api.md](officials-api.md#the-poverty-figure)) | 2026-10-31 |

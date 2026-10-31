@@ -15,7 +15,8 @@ snapshotted data.
 | Budget API, operating-unit codes | DepEd: digits 3–4 of the 7-digit code are the region (`08`**`10`**`001`) | `10` |
 | DPWH projects API (`api.dpwh.bettergov.ph`) | `province=Bukidnon` filter; `location.province` holds the **DEO name** (`"Bukidnon 2nd DEO"`); `components[].province` holds the real province | `"Region X"` |
 | Officials API (`officials.bettergov.ph`) | slug `bukidnon`, name `"BUKIDNON"` (upper case) | `region_slug: "region-x"`, `"REGION X"` |
-| Statistics API (`statistics.bettergov.ph`) | a code in each dataset's `Region/Province` dimension (look it up per dataset) | same |
+| Statistics API (`statistics.bettergov.ph`) | PSGC `1001300000` in PSGC and the 2024 census tables; a per-table row index elsewhere (`77` in the 2023 poverty tables, `106` in yearbook Table 1.1). Look it up per dataset. | PSGC `1000000000`; `76` in the 2023 poverty tables |
+| Map shapes (`dynasties.bettergov.ph/data/geo/`) | `slug: "bukidnon"`, `psgc: 1001300000` (a number) | `"REGION X"`, `psgc: 1000000000` |
 
 ## Legislative districts and DPWH district engineering offices
 
@@ -95,18 +96,56 @@ and Negros Oriental too. Use `Valencia City` or require `Bukidnon` (see
 
 ## LGUs (2 component cities, 20 municipalities)
 
-Malaybalay City (capital), Valencia City; Baungon, Cabanglasan, Damulog, Dangcagan,
+City of Malaybalay (capital), City of Valencia; Baungon, Cabanglasan, Damulog, Dangcagan,
 Don Carlos, Impasug-ong, Kadingilan, Kalilangan, Kibawe, Kitaotao, Lantapan, Libona,
 Malitbog, Manolo Fortich, Maramag, Pangantucan, Quezon, San Fernando, Sumilao, Talakag.
 
-- **Source of truth at build time:** `GET https://officials.bettergov.ph/api/v1/places/bukidnon`
-  (`towns[]` with `name` and `slug`; note `IMPASUG ONG` without the hyphen). PSA's PSGC
-  may also be on `statistics.bettergov.ph/api/classification` (to verify).
-- **Which district each town is in:** derive from
-  `officials.bettergov.ph/api/v1/contests?province=bukidnon&position=…&district=…`, not
-  from memory.
-- **Which DEO builds in a town:** DPWH contract rows show it, e.g. Kadingilan and Maramag
-  → 2nd DEO; Malaybalay → 1st DEO.
+In PSGC order. Population is the 2024 Census of Population (as of 1 July 2024) and
+earlier censuses, from statistics.bettergov.ph dataset `05c931eaecec498f9756`, release
+`2026-08-12T09-17-54-9f184c8f2d6c`. The 22 towns add up to the province figure.
+
+| PSGC code | LGU | Kind | Officials slug | District (2025) | Pop. 2015 | Pop. 2020 | Pop. 2024 |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: |
+| `1001301000` | Baungon | Municipality | `baungon` | 1st | 34,336 | 37,111 | 39,151 |
+| `1001302000` | Damulog | Municipality | `damulog` | 3rd | 30,302 | 39,322 | 38,564 |
+| `1001303000` | Dangcagan | Municipality | `dangcagan` | 3rd | 23,723 | 26,076 | 27,128 |
+| `1001304000` | Don Carlos | Municipality | `don-carlos` | 3rd | 66,959 | 69,273 | 73,592 |
+| `1001305000` | Impasug-ong | Municipality | `impasug-ong` | 2nd | 47,859 | 53,863 | 55,901 |
+| `1001306000` | Kadingilan | Municipality | `kadingilan` | 3rd | 33,778 | 33,735 | 35,432 |
+| `1001307000` | Kalilangan | Municipality | `kalilangan` | 4th | 41,601 | 43,711 | 44,108 |
+| `1001308000` | Kibawe | Municipality | `kibawe` | 3rd | 39,612 | 41,897 | 43,491 |
+| `1001309000` | Kitaotao | Municipality | `kitaotao` | 3rd | 50,260 | 53,796 | 57,364 |
+| `1001310000` | Lantapan | Municipality | `lantapan` | 2nd | 61,776 | 65,974 | 68,777 |
+| `1001311000` | Libona | Municipality | `libona` | 1st | 43,969 | 48,965 | 51,555 |
+| `1001312000` | City of Malaybalay | Component city | `malaybalay` | 2nd | 174,625 | 190,712 | 195,046 |
+| `1001313000` | Malitbog | Municipality | `malitbog` | 1st | 24,453 | 26,741 | 28,666 |
+| `1001314000` | Manolo Fortich | Municipality | `manolo-fortich` | 1st | 100,210 | 113,200 | 118,075 |
+| `1001315000` | Maramag | Municipality | `maramag` | 3rd | 102,089 | 108,293 | 109,864 |
+| `1001316000` | Pangantucan | Municipality | `pangantucan` | 4th | 53,126 | 56,580 | 60,162 |
+| `1001317000` | Quezon | Municipality | `quezon` | 3rd | 104,116 | 109,624 | 114,521 |
+| `1001318000` | San Fernando | Municipality | `san-fernando` | 2nd | 56,138 | 63,045 | 65,494 |
+| `1001319000` | Sumilao | Municipality | `sumilao` | 1st | 27,660 | 29,531 | 31,094 |
+| `1001320000` | Talakag | Municipality | `talakag` | 1st | 71,644 | 77,027 | 81,932 |
+| `1001321000` | City of Valencia | Component city | `valencia` | 4th | 192,993 | 216,546 | 223,620 |
+| `1001322000` | Cabanglasan | Municipality | `cabanglasan` | 2nd | 33,997 | 36,286 | 38,365 |
+| `1001300000` | **Bukidnon (province)** | Province | `bukidnon` | | **1,415,226** | **1,541,308** | **1,601,902** |
+
+- **Official list and codes:** PSGC `Q2_2024`,
+  `GET https://statistics.bettergov.ph/api/classification/psgc/Q2_2024/municipalities?reg=10&prv=13`
+  (22 rows). Not `Q4_2023`, which is missing Lantapan and Talakag. See
+  [statistics-api.md](data-sources/statistics-api.md#psgc-official-lgu-codes).
+- **Election town list:** `GET https://officials.bettergov.ph/api/v1/places/bukidnon`
+  (`towns[]` with `name` and `slug`; note `IMPASUG ONG` without the hyphen, and
+  `MALAYBALAY`/`VALENCIA` without "City of").
+- **Slug ↔ PSGC:** the dynasties town shapes carry both
+  ([map-shapes.md](data-sources/map-shapes.md)). All 22 match.
+- **Which district each town is in:** `GET
+  https://officials.bettergov.ph/api/v1/contests?year=2025&province=bukidnon&position=representative`
+  → `district` (`FIRST`…`FOURTH`) and `district_towns[]` on each of the 4 rows. Read it at
+  build time, not from this table.
+- **Which DEO builds in a town:** normally the DEO serving its district (table above).
+  DPWH contract rows agree, e.g. Kadingilan and Maramag (3rd District) → 2nd DEO; Malaybalay (2nd
+  District) → 1st DEO.
 
 ## Education
 
@@ -215,12 +254,21 @@ La Union TRC.
 | 4,229 | 3,520 | 211 | 494 | 4 | 0 | ₱63,053,405,735.13 |
 
 All of Region X (`region=Region X`) has 17,094 contracts totalling ₱483,413,721,591.91.
-See [data-sources/dpwh-projects-api.md](data-sources/dpwh-projects-api.md).
+
+Status filter values are exact and case-sensitive: `Completed`, `On-Going`,
+`Not Yet Started`, `For Procurement`, `Terminated`. `year=` filters on `infraYear`;
+Bukidnon's contracts run from 2016 to 2026. The 494 `For Procurement` rows all have
+`budget: 0` (not yet awarded). The per-year table is in
+[data-sources/dpwh-projects-api.md](data-sources/dpwh-projects-api.md).
 
 ## Officials and context
 
-- `officials.bettergov.ph/api/v1/places/bukidnon`: towns with seat counts, `poverty: 20.2`
-  (source and year to confirm before display).
+- `officials.bettergov.ph/api/v1/places/bukidnon`: towns with seat counts, `poverty: 20.2`.
+  That is PSA's 2023 poverty incidence among **families**. Display it from the statistics
+  API instead, which gives the year and precision.
+- Poverty (statistics.bettergov.ph, 2018 / 2021 / 2023): among population 27.6 / 29.2 /
+  27.0%; among families 22.3 / 22.8 / 20.2%. Region X population: 23.1 / 26.1 / 25.3%. See
+  [data-sources/statistics-api.md](data-sources/statistics-api.md#poverty).
 - `officials.bettergov.ph/api/v1/national/2025/provinces/bukidnon`: 2025 national and
   party-list results in the province.
 - Budget hearings that mention Bukidnon: `GET /api/v1/hearings/search?q=Bukidnon` (for
