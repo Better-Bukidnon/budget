@@ -50,7 +50,7 @@ gh repo set-default DMNCDLPRT/bukidnon-transparency-portal
 | Branch | Role | Deploys to |
 | --- | --- | --- |
 | `develop` (default) | Integration; every PR targets it | Development: the `bukidnon-transparency-portal` Worker ([Deploy](#deploy)) |
-| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `bukidnon-transparency-portal-production` Worker, created at the first release |
+| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `bukidnon-transparency-portal-production` Worker, created at v0.1 (2026-11-01) |
 | `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | A Preview URL per branch on the development Worker, posted on the PR |
 
 The nightly data refresh (`snapshot → check → build → deploy`) runs against `main` for
@@ -163,7 +163,7 @@ repository holds no Cloudflare token and no deploy workflow.
 | Worker | Role | Production branch | Build command | Deploy command | URL |
 | --- | --- | --- | --- | --- | --- |
 | `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
-| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address). Created at the first release (see below). |
+| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address) |
 
 Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`.
 
@@ -186,16 +186,22 @@ and production URLs serve `index.html` either way.
   an `env` block exists but no environment was chosen.
 - The build image runs Node 24 by default and CI runs Node 22. Both satisfy `engines`.
 - The development portal is not for the public.
-- Workers Builds has no schedule. The nightly refresh (`snapshot → check → build →
-  deploy`, #25) needs a scheduled trigger, chosen in #25.
+- Workers Builds has no schedule, but a **Deploy Hook** builds a branch on an HTTP POST.
+  The production Worker has one named `release` for `main` (**Settings → Builds → Deploy
+  Hooks**). Its URL is the credential, so it stays in the dashboard. It rebuilds
+  production without a commit to `main`, and a scheduler calling it is one way to do the
+  nightly refresh (`snapshot → check → build → deploy`, #25).
+- When a release merges to `main`, the development Worker also builds a preview of `main`
+  (a "main" entry in its branch list). It is not the public portal.
 - `siteUrl` in `portal.config.ts` is the public domain (#9), so every build,
   development included, writes it as the canonical URL and `og:url`.
 - The domain is a Custom Domain declared under `env.production` in `wrangler.jsonc`, so
   each production deploy attaches it. The `betterbukidnon.org` zone is on the same
   Cloudflare account. In Workers Builds, wrangler runs without a terminal and takes a
-  domain that another Worker holds without asking. Until the first production deploy,
-  the domain was attached to the development Worker by hand (checked 2026-11-01: both
-  served the same build); that deploy moves it.
+  domain that another Worker holds without asking. The domain was first attached to the
+  development Worker by hand; the first production deploy moved it on 2026-11-01 with no
+  downtime. Don't remove the domain and add it again by hand: that deletes its DNS record
+  and certificate, and the site is down until a new certificate is issued.
 - The zone has Cloudflare Web Analytics on, so Cloudflare adds a
   `static.cloudflareinsights.com/beacon.min.js` script to pages served on the domain.
   It is not in the build, and the workers.dev addresses don't have it. It is a request
@@ -206,12 +212,21 @@ and production URLs serve `index.html` either way.
   names the home page as canonical, and a shared deep link previews with the home page's
   title. Per-page metadata is #35.
 
-To create the production Worker, at the first release (#10), once `main` has the app code:
-in the dashboard go to **Workers & Pages → Create → Import a repository**, pick this
-repository, name the Worker `bukidnon-transparency-portal-production`, and use the
-commands above. Under **Settings → Builds → Branch control**, check that the production
-branch is `main` and turn off builds for other branches, since the development Worker
-already previews them. Its first deploy attaches `budget.betterbukidnon.org`.
+The production Worker was created at v0.1 (#10) with **Workers & Pages → Create → Import a
+repository**. If it ever has to be created again, check every field before the first
+deploy, because the import form fills in defaults that are wrong here and deploys at once:
+
+- **Production branch** defaults to the repository's default branch, `develop`. Set `main`.
+- **Build command** defaults to `npm run build`. Use `npm run build && npm run check`.
+- **Deploy command** defaults to `npx wrangler deploy`. Use
+  `npx wrangler deploy --env production`. Without `--env`, wrangler deploys the top-level
+  (development) config under the production Worker's name: the workers.dev address is
+  turned on, the domain is not attached, and Workers Builds offers a pull request to rename
+  the Worker in `wrangler.jsonc`. Close that pull request; don't merge it.
+- **Preview builds**: off, since the development Worker already previews other branches.
+
+Then build `main` with the `release` Deploy Hook. Its log should end with
+`budget.betterbukidnon.org (custom domain)`.
 
 To deploy development by hand (rarely needed): `npx wrangler login`, then
 `npm run build && npx wrangler deploy --env=""`.

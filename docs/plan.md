@@ -108,13 +108,15 @@ decisions are recorded in this file.
   no official seals or LGU logos); the template's colours and generic favicon stay. The
   "Create your own transparency portal" strip is off; the masthead and footer still link
   to the template. (The `wrangler.jsonc` name was set in #6.)
-- [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`
-  ([architecture.md](architecture.md#deploy)); its first deploy takes
-  `budget.betterbukidnon.org` from the development Worker. Release v0.1 (#10).
+- [x] Deploy: the `bukidnon-transparency-portal-production` Worker builds `main`
+  ([architecture.md](architecture.md#deploy)); its first deploy took
+  `budget.betterbukidnon.org` from the development Worker. v0.1.0 released and tagged
+  2026-11-01 (#10).
 
 **Exit:** live portal; the About page counts match
 [bukidnon-reference.md](bukidnon-reference.md) (57 office lines; 183/8/5/0 by name);
 `/gaa` shows 2020–2026 for "Bukidnon". *Agents: code-reviewer, deployment-engineer.*
+**Met 2026-11-01** on https://budget.betterbukidnon.org (smoke test in #10's release PR).
 
 ### Phase 2: Bukidnon pages on the Budget API
 
