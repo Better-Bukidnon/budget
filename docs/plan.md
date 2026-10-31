@@ -45,8 +45,8 @@ All from bettergov.ph sources (see [data-sources/](data-sources/README.md)).
 | F8 | **Region X context**: Bukidnon beside Northern Mindanao by department | Budget API NEP region rollup | Scale and comparison |
 | F9 | **Downloads and data dictionary**: every table as CSV, every snapshot as JSON with its requests | All | Reuse by media and researchers |
 | F10 | **Citizen reports link** (when the central service opens) | budget.bettergov.ph/report | Template contract; we only switch it on |
-| F11 *(conditional)* | **LGU finances**: province and town income/expenditure, NTA dependence | BLGF via data.bettergov.ph | Needs decision D2 |
-| F12 *(conditional)* | **Procurement**: PhilGEPS awards delivered to Bukidnon | search2 key or PhilGEPS files | Needs a key from BetterGov or decision D2 |
+| F11 *(conditional)* | **LGU finances**: province and town income/expenditure, NTA dependence | BLGF via data.bettergov.ph | Blocked: needs a bettergov.ph source (D2 is strict) |
+| F12 *(conditional)* | **Procurement**: PhilGEPS awards delivered to Bukidnon | search2 key or PhilGEPS files | Blocked: needs a key or API from BetterGov (D2 is strict) |
 
 ## Site map
 
@@ -73,7 +73,7 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
 ### Phase 0: Foundations
 
 - [x] Merge the template into this folder with an `upstream` remote ([architecture.md](architecture.md#repository-setup-phase-0)). Node ≥ 22.12.
-- [ ] Settle open decisions D1–D7 (below).
+- [x] Settle open decisions D1–D7 (below, #2).
 - [ ] Ask BetterGov (about.bettergov.ph / GitHub): may a third-party portal depend on
   `api.dpwh.bettergov.ph` (undocumented) and on the dynasties map files
   (`dynasties.bettergov.ph/data/geo/*.json.gz`, no CORS)? Is there a request budget for the
@@ -83,7 +83,7 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
   Find the DPWH API's accepted `status` values (#4, see
   [data-sources/](data-sources/README.md)).
 - [x] CI: `npm ci → lint → tsc → build → check` on every push and PR to `develop`/`main` (#5).
-- [ ] Cloudflare development deploy with Workers Builds: `develop` → the
+- [x] Cloudflare development deploy with Workers Builds: `develop` → the
   `bukidnon-transparency-portal` Worker (#6, see [architecture.md](architecture.md#deploy)).
   The public production Worker comes at the first release (Phase 1).
 - [ ] Optional for development: register the bettergov.ph MCP servers (budget, data,
@@ -97,10 +97,10 @@ decisions are recorded in this file.
 
 - [ ] `portal.config.ts`: `id: bukidnon-province`, `kind: province`, the 4 published DEO
   names, place `{ label: 'Bukidnon', region: 'X' }`, districts `leg:bukidnon:1st…4th`,
-  operator per D1.
+  operator per D1 (independent; name and contact to fill in).
 - [ ] `npm run check -- --verbose`: review lines found only by name under another office
   (e.g. "Davao–Bukidnon Road"); add exclusions with reasons.
-- [ ] Branding (name, colours, logo only if D1 allows), `siteUrl`. (The `wrangler.jsonc`
+- [ ] Branding (name, colours, no official seals per D1), `siteUrl`. (The `wrangler.jsonc`
   name was set in #6.)
 - [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`
   ([architecture.md](architecture.md#deploy)) and release v0.1 (#10).
@@ -128,10 +128,13 @@ ui-designer, data-analyst, accessibility-tester, test-automator.*
 
 - [ ] `scripts/snapshot.ts` with the bettergov.ph host guard; nightly CI rebuild.
 - [ ] F4 Infrastructure tracker (DPWH API snapshot): table, filters, contract page, map per D4.
+  Not started until BetterGov confirms the DPWH API may be used (D3, #3).
 - [ ] F3 Towns, second pass: contracts per town (from `components[].province` + town in
-  description), officials elected in 2025, district per town (officials API).
+  description; waits on D3 like F4), officials elected in 2025, district per town
+  (officials API).
 - [ ] Per-resident figures (statistics API population), with the population year.
-- [ ] F11 / F12 only if D2 or a BetterGov key allows.
+- [ ] F11 / F12 only if BetterGov serves the data on a bettergov.ph host or issues a key
+  (D2 is strict).
 
 **Exit:** snapshot provenance on the About page; CSP `connect-src` limited to
 `*.bettergov.ph`; contract counts reconcile with the API summary (4,229 at survey time).
@@ -141,8 +144,8 @@ ui-designer, data-analyst, accessibility-tester, test-automator.*
 
 - [ ] Accessibility (WCAG 2.2 AA), keyboard and screen-reader pass.
 - [ ] Performance on a mid-range Android over 3G; bundle budget in CI.
-- [ ] Plain-language review of every label and empty state; Binisaya/Cebuano labels if D6
-  says so.
+- [ ] Plain-language review of every label and empty state; Binisaya/Cebuano labels for
+  navigation and key labels (D6).
 - [ ] SEO and link previews; security headers.
 - [ ] Content and neutrality review (no allegation words; disclaimers on every figure page).
 - [ ] Submit to the BetterLGU directory ([lgu.bettergov.ph](https://lgu.bettergov.ph) lists
@@ -161,14 +164,16 @@ qa-expert, content-quality-editor.*
 
 ## Open decisions
 
-| # | Decision | Options | Recommendation |
+All seven were decided on 2026-10-31 (#2). To reopen one, edit its row and say why.
+
+| # | Question | Options | Decision |
 | --- | --- | --- | --- |
-| D1 | **Who operates the portal?** (footer, contact, logo, tone) | Independent/civil society · provincial or city government · a school or university | Decide before Phase 1. If not run by the LGU, no official seals and keep the "independent and unofficial" notice. |
-| D2 | **Do BetterGov-published files count as "from bettergov.ph"?** Every file in data.bettergov.ph is hosted elsewhere. | Strict (bettergov.ph hosts only) · also allow `huggingface.co/datasets/bettergovph/*` and `github.com/bettergovph/*` | Strict by default, as instructed. Allowing BetterGov's own mirrors would unlock PhilGEPS, the DPWH bulk data and flood control, but not BLGF, boundaries or COA. |
-| D3 | **Depend on the undocumented DPWH API before BetterGov confirms?** | Wait · build behind a flag | Build F4 behind a flag; launch it only after confirmation. |
-| D4 | **Maps** | No basemap (SVG points, outlines if bettergov.ph serves them) · a tile provider (an off-domain request) | No basemap at launch. It respects the rule and is lighter. |
-| D5 | **Show political-family ("bloc") data** from the officials API? | Officials list only · include blocs | Officials list only at launch. Blocs are an editorial layer that needs a methodology page. |
-| D6 | **Languages** | English · English + Binisaya/Cebuano labels · + Filipino | English at launch; Binisaya for navigation and key labels in Phase 4. |
+| D1 | **Who operates the portal?** (footer, contact, logo, tone) | Independent/civil society · provincial or city government · a school or university | **Decided 2026-10-31:** independent / civil society. No official seals or LGU logos; the "independent and unofficial" notice stays. The operator's name and contact are set with the config (#7). |
+| D2 | **Do BetterGov-published files count as "from bettergov.ph"?** Every file in data.bettergov.ph is hosted elsewhere. | Strict (bettergov.ph hosts only) · also allow `huggingface.co/datasets/bettergovph/*` and `github.com/bettergovph/*` | **Decided 2026-10-31:** strict, only `*.bettergov.ph` hosts. The data.bettergov.ph catalogue is for discovery only. F11 and F12 wait until BetterGov serves the data on a bettergov.ph host or issues a key (#31). |
+| D3 | **Depend on the undocumented DPWH API before BetterGov confirms?** | Wait · build behind a flag | **Decided 2026-10-31:** wait. F4 (#26), the contracts map (#27) and contracts on town pages aren't started until BetterGov confirms (#3). The earlier recommendation was to build behind a flag. |
+| D4 | **Maps** | No basemap (SVG points, outlines if bettergov.ph serves them) · a tile provider (an off-domain request) | **Decided 2026-10-31:** no basemap. SVG points; town outlines only from a bettergov.ph host, drawn from a build-time copy ([map-shapes.md](data-sources/map-shapes.md)) once BetterGov allows it (#3). |
+| D5 | **Show political-family ("bloc") data** from the officials API? | Officials list only · include blocs | **Decided 2026-10-31:** officials list only. Blocs would need their own methodology page first. |
+| D6 | **Languages** | English · English + Binisaya/Cebuano labels · + Filipino | **Decided 2026-10-31:** English at launch; Binisaya/Cebuano for navigation and key labels in Phase 4 (#34). No Filipino translation. |
 | D7 | **Domain and hosting account** | `*.workers.dev` · own domain | **Decided 2026-10-31:** `*.workers.dev` on the project's Cloudflare account, deployed by Workers Builds; add a domain at launch (#36). |
 
 ## Risks

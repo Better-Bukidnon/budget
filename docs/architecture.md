@@ -124,8 +124,8 @@ Two lanes:
 - **Charts:** small hand-written SVG components (bar, line, small multiples, stat tiles),
   following the dataviz guidance, to stay near the template's 95 KB budget. Every chart
   has a table view and a CSV download.
-- **Maps:** depend on decision D4 in [plan.md](plan.md#open-decisions). The default
-  assumes no third-party tiles: an SVG point map of contract coordinates, projected
+- **Maps:** no basemap and no third-party tiles (decision D4 in
+  [plan.md](plan.md#open-decisions)): an SVG point map of contract coordinates, projected
   locally, with town outlines only if a bettergov.ph host serves them. Unverified
   coordinates get a different mark.
 
