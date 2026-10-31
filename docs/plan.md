@@ -99,8 +99,10 @@ decisions are recorded in this file.
   names, place `{ label: 'Bukidnon', region: 'X' }`, districts `leg:bukidnon:1st…4th`,
   operator per D1 (#7). The operator is a placeholder, "Independent volunteers", until the
   real name and contact are settled before the v0.1 release (#10).
-- [ ] `npm run check -- --verbose`: review lines found only by name under another office
-  (e.g. "Davao–Bukidnon Road"); add exclusions with reasons.
+- [x] `npm run check -- --verbose`: review lines found only by name under another office
+  (e.g. "Davao–Bukidnon Road"); add exclusions with reasons (#8). 1 FY2027 line and 417
+  DPWH program families (2020–2026) excluded; see
+  [bukidnon-reference.md](bukidnon-reference.md#namesake-review).
 - [ ] Branding (name, colours, no official seals per D1), `siteUrl`. (The `wrangler.jsonc`
   name was set in #6.)
 - [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`

@@ -82,7 +82,8 @@ in the portal.
 ## GAA 2020–2026: program families whose name contains the search
 
 From `GET /api/v1/gaa/departments/{id}/programs?q=…` (`meta.matched` = number of program
-families). Raw counts, **before** namesake review.
+families). Raw counts, **before** namesake review; for what the portal keeps, see
+[Namesake review](#namesake-review).
 
 | `q` | DPWH (18) | DA (05) | Others |
 | --- | ---: | ---: | --- |
@@ -93,6 +94,80 @@ families). Raw counts, **before** namesake review.
 `Valencia` already shows the namesake problem: there are towns named Valencia in Bohol
 and Negros Oriental too. Use `Valencia City` or require `Bukidnon` (see
 [data-rules.md](data-rules.md#namesakes)).
+
+## Namesake review
+
+Reviewed 2026-10-31 (#8). The exclusions live in
+[`src/bukidnon/exclusions.ts`](../src/bukidnon/exclusions.ts) (2027, by hand) and
+[`src/bukidnon/exclusions-gaa.ts`](../src/bukidnon/exclusions-gaa.ts) (2020–2026, generated
+by [`scripts/bukidnon/review-namesakes.ts`](../scripts/bukidnon/review-namesakes.ts)). The
+About page lists every one with its reason.
+
+### FY2027 lines (place search `q=Bukidnon`)
+
+| Step | DPWH rows |
+| --- | ---: |
+| Title names Bukidnon | 183 |
+| Dropped by the template's region rule (region given and not X): XI 23, XII 14, XIII 5, NCR 1 | −43 |
+| Kept: under a Bukidnon DEO 57, Central Office in Region X 82, another DEO 1 | 140 |
+| Excluded by hand: `dpwh:house-reading:2551`, CDO–Airport–Bukidnon Rd under the Cagayan de Oro City 1st DEO (House bill only, ₱50,000,000) | −1 |
+| **In the portal** | **139** |
+
+FMR 8 and HFEP 5 rows all name a Bukidnon town or facility and stay. NIA has none.
+
+- **Davao–Bukidnon Road (decision):** its 2027 lines are under the Davao City 2nd DEO or
+  Central Office, tagged Region XI, so the region rule already drops them. No hand
+  exclusion is needed. The same goes for the Bukidnon–Cotabato Rd and Paco–Roxas–Arakan
+  lines (XII) and the East–West lateral road in Agusan and Surigao (XIII).
+- **One line the region rule drops wrongly:** `dpwh:house-reading:16124`, "Construction of
+  Materials Recovery Facility (MRF), Bukidnon 4th District Engineering Office" (Central
+  Office, ₱600,000 in both versions), is tagged NCR. The config can't add a line back, so it
+  is logged in [not-usable-yet.md](data-sources/not-usable-yet.md) to report to BetterGov.
+
+### Enacted budgets 2020–2026 (`q=Bukidnon`, every department)
+
+**Outside DPWH (90 families): all kept.** DA 75 (farm-to-market roads, each naming a
+Bukidnon town), BSGC 10 (NIA Talakag irrigation; NEA lines and NHA resettlement for Bukidnon
+Airport, Don Carlos, Maramag, Quezon, Pangantucan), DND 1 (Kibaritan Military Reservation,
+Kalilangan), PCO 1 (Government Communication Academy, Manolo Fortich), OEOs 1 (Bukidnon
+Museum), DOTr 1 (Bukidnon Airport).
+
+**DPWH (3,296 families): 417 excluded.** The GAA has no region, so the region rule can't
+help. Each family was joined to the office its lines are listed under (hierarchy route, see
+[budget-api.md](data-sources/budget-api.md#dpwh-lines-by-office-20202026)):
+
+| Outcome | Families |
+| --- | ---: |
+| Kept: listed under a Bukidnon DEO in some year | 1,926 |
+| Kept: Central Office or a regional office, and the name places it in Bukidnon (`…, <town>, Bukidnon`), or names a Bukidnon district, office or institution | 847 |
+| Kept: a section or bridge of a road whose DEO-listed sections are all under Bukidnon DEOs (Bukidnon–Davao City Rd, Sayre Highway to the Cotabato boundary, Misamis Oriental–Bukidnon–Agusan Rd, Kapalong–Talaingod–Valencia Rd from K1538) | 88 |
+| **Excluded:** listed only under DEOs outside Bukidnon (Davao City 2nd 94, Cotabato 2nd 33, Cagayan de Oro City 1st 18, Cotabato 3rd 14, Davao del Norte 13, …) | 193 |
+| **Excluded:** Central Office, and the name places the work outside (Davao City, Agusan del Sur/Norte, Butuan City, Surigao del Sur, Misamis Oriental, Davao del Norte, Davao de Oro, Cotabato) | 129 |
+| **Excluded:** Central Office sections of roads whose DEO-listed sections are all outside Bukidnon (Paco–Roxas–Arakan 30, CDO–Airport–Bukidnon 21, Davao–Bukidnon 20, Bukidnon–Cotabato 19) | 90 |
+| **Excluded:** studies filed under Region XI or XII (3); Calinan Section feeder road whose other entries say Davao City (2) | 5 |
+| Unresolved, kept: no evidence either way (see below) | 18 |
+
+What the exclusions take out of the `/gaa` totals (programs with an amount that year):
+
+| Year | Before | Excluded | Shown now |
+| --- | ---: | ---: | ---: |
+| 2020 | ₱17.22B · 459 | ₱6.03B · 82 | ₱11.18B · 377 |
+| 2021 | ₱24.91B · 658 | ₱7.34B · 110 | ₱17.56B · 548 |
+| 2022 | ₱23.87B · 489 | ₱5.11B · 65 | ₱18.76B · 424 |
+| 2023 | ₱28.09B · 548 | ₱5.35B · 63 | ₱22.73B · 485 |
+| 2024 | ₱30.72B · 591 | ₱4.27B · 54 | ₱26.45B · 537 |
+| 2025 | ₱23.55B · 437 | ₱2.73B · 34 | ₱20.82B · 403 |
+| 2026 | ₱12.15B · 433 | ₱3.24B · 66 | ₱8.91B · 367 |
+
+**Unresolved, kept (18):** all Central Office, with no DEO-listed section to compare:
+Bukidnon Bdry–North Cotabato Rd (11 sections and bridges; no DEO lists any part of it);
+Kapalong–Talaingod–Valencia Rd K1520–K1528 (2, between the Davao del Norte DEO's
+K1486–K1523 and the Bukidnon DEOs' K1538 onward); and bridges on that road with no DEO entry
+(Bonacao ×2, Kalagutay, Mawi-i, New Batangan). A name match stays in unless the data places
+it elsewhere. Re-run the script with `--list` to see every family's class.
+
+Re-run the review when the API rebuilds or a new GAA year appears. `npm run check` fails
+when an exclusion stops matching a family, which is the signal.
 
 ## LGUs (2 component cities, 20 municipalities)
 
