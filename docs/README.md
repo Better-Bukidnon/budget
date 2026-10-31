@@ -14,7 +14,18 @@ bettergov.ph data**.
 | [architecture.md](architecture.md) | Repo setup, code layout, data flow, quality gates, deploy |
 | [agents.md](agents.md) | The 28 Claude Code subagents in `.claude/agents/` |
 
-When the template is merged in (Phase 0), its own `docs/api.md`, `docs/deploy.md` and
-`docs/reporting.md` will sit next to these files.
+## Template docs (from upstream)
+
+These come from [bettergovph/transparency-portal](https://github.com/bettergovph/transparency-portal)
+and are updated by `git merge upstream/main`. Don't edit them here; put Bukidnon notes in
+our own files instead.
+
+| Read | For |
+| --- | --- |
+| [../README.md](../README.md) | The template's own README: setup, config, scripts |
+| [api.md](api.md) | The Budget API requests the template makes |
+| [deploy.md](deploy.md) | Static build and hosting (Cloudflare, Vercel, Netlify), `npm run check` as a gate |
+| [reporting.md](reporting.md) | The citizen-report link contract with budget.bettergov.ph |
+| [poster/](poster/) | "Create your own transparency portal" poster images |
 
 Survey date for all figures: **2026-10-31**.

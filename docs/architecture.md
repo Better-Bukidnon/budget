@@ -37,6 +37,14 @@ git merge upstream/main --allow-unrelated-histories   # no filename collisions: 
 
 Later updates: `git fetch upstream && git merge upstream/main`, on a branch off `develop`.
 
+Once the `upstream` remote exists, the GitHub CLI may pick
+`bettergovph/transparency-portal` as its target, and `gh pr create` or `gh issue` would then
+act on the template repo. Pin it once per clone:
+
+```bash
+gh repo set-default DMNCDLPRT/bukidnon-transparency-portal
+```
+
 ### Branches and environments
 
 | Branch | Role | Deploys to |
