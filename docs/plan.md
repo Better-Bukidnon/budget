@@ -72,7 +72,7 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
 
 ### Phase 0: Foundations
 
-- [ ] Merge the template into this folder with an `upstream` remote ([architecture.md](architecture.md#repository-setup-phase-0)). Node ≥ 22.12.
+- [x] Merge the template into this folder with an `upstream` remote ([architecture.md](architecture.md#repository-setup-phase-0)). Node ≥ 22.12.
 - [ ] Settle open decisions D1–D7 (below).
 - [ ] Ask BetterGov (about.bettergov.ph / GitHub): may a third-party portal depend on
   `api.dpwh.bettergov.ph` and `officials.bettergov.ph`? CORS? Rate limits? Can we get a
