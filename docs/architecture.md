@@ -51,7 +51,7 @@ gh repo set-default DMNCDLPRT/bukidnon-transparency-portal
 | --- | --- | --- |
 | `develop` (default) | Integration; every PR targets it | Development: the `bukidnon-transparency-portal` Worker ([Deploy](#deploy)) |
 | `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `bukidnon-transparency-portal-production` Worker, created at the first release |
-| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | Nothing yet (CI only). Workers Builds preview URLs can be turned on later. |
+| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | A Preview URL per branch on the development Worker, posted on the PR |
 
 The nightly data refresh (`snapshot → check → build → deploy`) runs against `main` for
 production and `develop` for development.
@@ -159,8 +159,12 @@ repository holds no Cloudflare token and no deploy workflow.
 | `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
 | `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | Not created yet (see below) |
 
-Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`. Builds
-for other branches are off.
+Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`.
+
+Every other branch gets a preview build on the development Worker. Workers Builds runs
+the build command, then the preview command `npx wrangler preview`, and posts the
+branch's Preview URL and a check on the pull request. `wrangler preview` refuses to run
+without a `previews` block in `wrangler.jsonc`, which is why an empty one is there.
 
 - `wrangler.jsonc` names the development Worker at the top level and the production Worker
   under `env.production`. A plain `wrangler deploy` (or the template's
@@ -181,8 +185,9 @@ for other branches are off.
 To create the production Worker, at the first release (#10), once `main` has the app code:
 in the dashboard go to **Workers & Pages → Create → Import a repository**, pick this
 repository, name the Worker `bukidnon-transparency-portal-production`, and use the
-commands above. Check that the production branch is `main` under **Settings → Builds →
-Branch control**. The public domain goes on this Worker at launch (#36).
+commands above. Under **Settings → Builds → Branch control**, check that the production
+branch is `main` and turn off builds for other branches, since the development Worker
+already previews them. The public domain goes on this Worker at launch (#36).
 
 To deploy development by hand (rarely needed): `npx wrangler login`, then
 `npm run build && npx wrangler deploy --env=""`.

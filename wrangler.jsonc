@@ -12,6 +12,9 @@
   // Bukidnon: the top level is the development Worker (built from `develop`); production
   // is built from `main` with `npx wrangler deploy --env production`.
   // See docs/architecture.md#deploy.
+  // Other branches get a Preview URL from Workers Builds (`npx wrangler preview`), which
+  // requires this block, even empty.
+  "previews": {},
   "env": {
     "production": {
       "name": "bukidnon-transparency-portal-production"
