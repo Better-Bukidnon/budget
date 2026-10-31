@@ -83,7 +83,9 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
   Find the DPWH API's accepted `status` values (#4, see
   [data-sources/](data-sources/README.md)).
 - [x] CI: `npm ci → lint → tsc → build → check` on every push and PR to `develop`/`main` (#5).
-- [ ] Cloudflare preview deploys (#6).
+- [ ] Cloudflare development deploy with Workers Builds: `develop` → the
+  `bukidnon-transparency-portal` Worker (#6, see [architecture.md](architecture.md#deploy)).
+  The public production Worker comes at the first release (Phase 1).
 - [ ] Optional for development: register the bettergov.ph MCP servers (budget, data,
   statistics, officials) in `.mcp.json`. All four answer an MCP `initialize` over
   streamable HTTP (checked 2026-10-31).
@@ -98,8 +100,10 @@ decisions are recorded in this file.
   operator per D1.
 - [ ] `npm run check -- --verbose`: review lines found only by name under another office
   (e.g. "Davao–Bukidnon Road"); add exclusions with reasons.
-- [ ] Branding (name, colours, logo only if D1 allows), `siteUrl`, `wrangler.jsonc` name.
-- [ ] Deploy.
+- [ ] Branding (name, colours, logo only if D1 allows), `siteUrl`. (The `wrangler.jsonc`
+  name was set in #6.)
+- [ ] Deploy: create the `bukidnon-transparency-portal-production` Worker from `main`
+  ([architecture.md](architecture.md#deploy)) and release v0.1 (#10).
 
 **Exit:** live portal; the About page counts match
 [bukidnon-reference.md](bukidnon-reference.md) (57 office lines; 183/8/5/0 by name);
@@ -165,7 +169,7 @@ qa-expert, content-quality-editor.*
 | D4 | **Maps** | No basemap (SVG points, outlines if bettergov.ph serves them) · a tile provider (an off-domain request) | No basemap at launch. It respects the rule and is lighter. |
 | D5 | **Show political-family ("bloc") data** from the officials API? | Officials list only · include blocs | Officials list only at launch. Blocs are an editorial layer that needs a methodology page. |
 | D6 | **Languages** | English · English + Binisaya/Cebuano labels · + Filipino | English at launch; Binisaya for navigation and key labels in Phase 4. |
-| D7 | **Domain and hosting account** | `*.workers.dev` · own domain | Start on workers.dev; add a domain at launch. |
+| D7 | **Domain and hosting account** | `*.workers.dev` · own domain | **Decided 2026-10-31:** `*.workers.dev` on the project's Cloudflare account, deployed by Workers Builds; add a domain at launch (#36). |
 
 ## Risks
 

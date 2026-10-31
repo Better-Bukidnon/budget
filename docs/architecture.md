@@ -49,12 +49,12 @@ gh repo set-default DMNCDLPRT/bukidnon-transparency-portal
 
 | Branch | Role | Deploys to |
 | --- | --- | --- |
-| `develop` (default) | Integration; every PR targets it | Preview / staging (e.g. a `-staging` Worker or Cloudflare preview URL) |
-| `main` | Production; changes only arrive by a release PR from `develop` | The public portal |
-| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | Per-PR preview |
+| `develop` (default) | Integration; every PR targets it | Development: the `bukidnon-transparency-portal` Worker ([Deploy](#deploy)) |
+| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `bukidnon-transparency-portal-production` Worker, created at the first release |
+| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | A Preview URL per branch on the development Worker, posted on the PR |
 
 The nightly data refresh (`snapshot → check → build → deploy`) runs against `main` for
-production and `develop` for staging.
+production and `develop` for development.
 
 ## Code layout for Bukidnon additions
 
@@ -149,7 +149,48 @@ lint tooling (minimatch via eslint), with 0 in production dependencies.
 
 ## Deploy
 
-Cloudflare Workers static assets, as the Bohol sample is deployed. `wrangler.jsonc`
-`name: "bukidnon-transparency-portal"`, SPA fallback already configured. A nightly GitHub
-Action runs `snapshot → check → build → deploy`, so budget figures and contract statuses
-refresh daily. Set `siteUrl` for link previews once the domain is known.
+Cloudflare Workers static assets, as the Bohol sample is deployed: no Worker code, no
+bindings, SPA fallback in `wrangler.jsonc`. Hosted on `*.workers.dev` (decision D7).
+**Cloudflare Workers Builds** (the dashboard's Git integration) builds and deploys, so the
+repository holds no Cloudflare token and no deploy workflow.
+
+| Worker | Role | Production branch | Build command | Deploy command | URL |
+| --- | --- | --- | --- | --- | --- |
+| `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
+| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | Not created yet (see below) |
+
+Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`.
+
+Every other branch gets a preview build on the development Worker. Workers Builds runs
+the build command, then the preview command `npx wrangler preview`, and posts the
+branch's Preview URL and a check on the pull request. `wrangler preview` refuses to run
+without a `previews` block in `wrangler.jsonc`, which is why an empty one is there.
+On a Preview URL, client-side routes such as `/gaa` load in a browser, but a request
+without `Sec-Fetch-Mode: navigate` (plain `curl`, `fetch`) gets a 404. The development
+and production URLs serve `index.html` either way.
+
+- `wrangler.jsonc` names the development Worker at the top level and the production Worker
+  under `env.production`. A plain `wrangler deploy` (or the template's
+  `npm run deploy:cloudflare`) therefore goes to development, never to the public portal.
+- Keep those names equal to the Workers' names in the dashboard. When they differ,
+  Workers Builds opens a pull request to rename them.
+- `npm run check` is part of the build command, so a failed check stops the deploy. It
+  queries the live Budget API, so a Budget API outage also blocks deploys.
+- `--env=""` selects the top-level (development) config. Without it, wrangler warns that
+  an `env` block exists but no environment was chosen.
+- The build image runs Node 24 by default and CI runs Node 22. Both satisfy `engines`.
+- The development portal is not for the public: until Phase 1 (#7) it still shows the
+  template's Province of Bohol config.
+- Workers Builds has no schedule. The nightly refresh (`snapshot → check → build →
+  deploy`, #25) needs a scheduled trigger, chosen in #25.
+- Set `siteUrl` for link previews once the domain is known.
+
+To create the production Worker, at the first release (#10), once `main` has the app code:
+in the dashboard go to **Workers & Pages → Create → Import a repository**, pick this
+repository, name the Worker `bukidnon-transparency-portal-production`, and use the
+commands above. Under **Settings → Builds → Branch control**, check that the production
+branch is `main` and turn off builds for other branches, since the development Worker
+already previews them. The public domain goes on this Worker at launch (#36).
+
+To deploy development by hand (rarely needed): `npx wrangler login`, then
+`npm run build && npx wrangler deploy --env=""`.
