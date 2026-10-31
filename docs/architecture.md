@@ -165,6 +165,9 @@ Every other branch gets a preview build on the development Worker. Workers Build
 the build command, then the preview command `npx wrangler preview`, and posts the
 branch's Preview URL and a check on the pull request. `wrangler preview` refuses to run
 without a `previews` block in `wrangler.jsonc`, which is why an empty one is there.
+On a Preview URL, client-side routes such as `/gaa` load in a browser, but a request
+without `Sec-Fetch-Mode: navigate` (plain `curl`, `fetch`) gets a 404. The development
+and production URLs serve `index.html` either way.
 
 - `wrangler.jsonc` names the development Worker at the top level and the production Worker
   under `env.production`. A plain `wrangler deploy` (or the template's
