@@ -1,0 +1,13 @@
+# Keep LF in the repository and in every checkout, so Windows clones don't churn
+# line endings against upstream (bettergovph/transparency-portal is LF-only).
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary

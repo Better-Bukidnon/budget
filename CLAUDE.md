@@ -6,9 +6,14 @@ whose default config is the Province of Bohol
 ([live sample](https://transparency-portal.bettergov.workers.dev/gaa)). Our version adds
 Bukidnon-specific pages on top of it.
 
-**Status:** planning. Repo: `github.com/DMNCDLPRT/bukidnon-transparency-portal`
-(private). The template has not been merged in yet. Next step: Phase 0 in
+**Status:** Phase 1. Repo: `github.com/DMNCDLPRT/bukidnon-transparency-portal`
+(private). The template is merged in, with an `upstream` remote for
+`bettergovph/transparency-portal`, and `portal.config.ts` points at Bukidnon (#7). Phase 0's
+question to BetterGov (#3) is still open. Next steps: the rest of Phase 1 in
 [docs/plan.md](docs/plan.md).
+
+Commands (Node ≥ 22.12): `npm install`, `npm run dev` (http://localhost:5132),
+`npm run check` (queries the live API), `npm run lint`, `npm run build`.
 
 ## Hard rules
 
