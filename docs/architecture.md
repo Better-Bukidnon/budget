@@ -128,6 +128,13 @@ Two lanes:
 
 ## Quality gates (CI)
 
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs on every push and pull
+request to `develop` and `main`, on Node 22: `npm ci`, `npm run lint`, `tsc -b`,
+`npm run build`, then `npm run check` last because it calls the live Budget API. A red run
+means don't merge. Branch protection would need GitHub Pro or a public repo, so this is a
+team rule. `npm audit` is not a gate: on 2026-10-31 its only finding was in the template's
+lint tooling (minimatch via eslint), with 0 in production dependencies.
+
 | Gate | Tool |
 | --- | --- |
 | Config and query reconciliation | `npm run check` (template) + `check-bukidnon.ts` |

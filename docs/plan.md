@@ -79,7 +79,8 @@ Each phase ends with a deployable portal. Agents are from `.claude/agents/`
   search2 key for PhilGEPS? Is there map geometry on a bettergov.ph host?
 - [ ] Verify CORS on the DPWH, officials and statistics APIs. Find the DPWH API's accepted
   `status` values.
-- [ ] CI: `npm ci → check → build` on every push; Cloudflare preview deploys.
+- [x] CI: `npm ci → lint → tsc → build → check` on every push and PR to `develop`/`main` (#5).
+- [ ] Cloudflare preview deploys (#6).
 - [ ] Optional for development: register the bettergov.ph MCP servers (budget, data,
   statistics, officials) in `.mcp.json`.
 
