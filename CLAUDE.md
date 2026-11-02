@@ -7,8 +7,9 @@ whose default config is the Province of Bohol
 Bukidnon-specific pages on top of it.
 
 **Status:** v0.1.0 released 2026-11-01: Bohol parity for Bukidnon, live at
-<https://budget.betterbukidnon.org> (#10). Repo: `github.com/DMNCDLPRT/bukidnon-transparency-portal`
-(private), with an `upstream` remote for `bettergovph/transparency-portal`. Phase 0's
+<https://budget.betterbukidnon.org> (#10). Repo: `github.com/Better-Bukidnon/budget`
+(public, owned by the Better-Bukidnon org), with an `upstream` remote for
+`bettergovph/transparency-portal`. Phase 0's
 question to BetterGov (#3) is still open. Next steps: Phase 2 in
 [docs/plan.md](docs/plan.md).
 

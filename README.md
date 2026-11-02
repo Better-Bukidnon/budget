@@ -1,6 +1,6 @@
 # Transparency Portal
 
-[![CI](https://github.com/DMNCDLPRT/bukidnon-transparency-portal/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/DMNCDLPRT/bukidnon-transparency-portal/actions/workflows/ci.yml?query=branch%3Adevelop)
+[![CI](https://github.com/Better-Bukidnon/budget/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/Better-Bukidnon/budget/actions/workflows/ci.yml?query=branch%3Adevelop)
 
 A small, forkable website that shows citizens **every FY 2027 budget project** for one
 LGU (province, city or municipality) or one DPWH district engineering office: what the

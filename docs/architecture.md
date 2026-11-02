@@ -23,7 +23,8 @@ scripts/setup.ts      npm run setup   scripts/check.ts  npm run check
 This folder already holds our `docs/`, `.claude/` and `CLAUDE.md`. Merge the template in
 under it so upstream fixes can keep flowing:
 
-The repository is `github.com/DMNCDLPRT/bukidnon-transparency-portal` (private), with
+The repository is `github.com/Better-Bukidnon/budget` (public, owned by the Better-Bukidnon
+organization; it was `DMNCDLPRT/bukidnon-transparency-portal` until 2026-11-02, #48), with
 `develop` as the default branch and `main` as production. Bring the template in on a
 branch off `develop`:
 
@@ -42,7 +43,7 @@ Once the `upstream` remote exists, the GitHub CLI may pick
 act on the template repo. Pin it once per clone:
 
 ```bash
-gh repo set-default DMNCDLPRT/bukidnon-transparency-portal
+gh repo set-default Better-Bukidnon/budget
 ```
 
 ### Branches and environments
@@ -139,8 +140,11 @@ Two lanes:
 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs on every push and pull
 request to `develop` and `main`, on Node 22: `npm ci`, `npm run lint`, `tsc -b`,
 `npm run build`, then `npm run check` last because it calls the live Budget API. A red run
-means don't merge. Branch protection would need GitHub Pro or a public repo, so this is a
-team rule. `npm audit` is not a gate: on 2026-10-31 its only finding was in the template's
+means don't merge, and GitHub enforces it: the `Protect develop and main` ruleset only
+accepts changes to `develop` and `main` through a pull request whose
+`Lint, typecheck, build, check` job passed, with no force-pushes or deletion and no bypass.
+Org owners can edit the ruleset if the live API is down and a fix must ship.
+`npm audit` is not a gate: on 2026-10-31 its only finding was in the template's
 lint tooling (minimatch via eslint), with 0 in production dependencies.
 
 | Gate | Tool |
@@ -165,7 +169,10 @@ repository holds no Cloudflare token and no deploy workflow.
 | `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
 | `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address) |
 
-Both connect to `DMNCDLPRT/bukidnon-transparency-portal` with root directory `/`.
+Both connect to `Better-Bukidnon/budget` with root directory `/`, through the Cloudflare
+Workers and Pages GitHub app installed on the Better-Bukidnon organization. The Worker names
+predate the repo's move and stay as they are: renaming the development Worker would change
+its `workers.dev` URL.
 
 Every other branch gets a preview build on the development Worker. Workers Builds runs
 the build command, then the preview command `npx wrangler preview`, and posts the
