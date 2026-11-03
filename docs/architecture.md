@@ -50,12 +50,11 @@ gh repo set-default Better-Bukidnon/budget
 
 | Branch | Role | Deploys to |
 | --- | --- | --- |
-| `develop` (default) | Integration; every PR targets it | Development: the `bukidnon-transparency-portal` Worker ([Deploy](#deploy)) |
-| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `budget-bukidnon` Worker, created at v0.1 (2026-11-01) as `bukidnon-transparency-portal-production` |
-| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | A Preview URL per branch on the development Worker, posted on the PR |
+| `develop` (default) | Integration; every PR targets it | Nothing; CI only. Run it locally with `npm run dev` |
+| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `budget-bukidnon` Worker ([Deploy](#deploy)) |
+| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | Nothing; CI only |
 
-The nightly data refresh (`snapshot → check → build → deploy`) runs against `main` for
-production and `develop` for development.
+The nightly data refresh (`snapshot → check → build → deploy`) runs against `main`.
 
 ## Code layout for Bukidnon additions
 
@@ -160,51 +159,47 @@ lint tooling (minimatch via eslint), with 0 in production dependencies.
 
 Cloudflare Workers static assets, as the Bohol sample is deployed: no Worker code, no
 bindings, SPA fallback in `wrangler.jsonc`. The public portal is at
-<https://budget.betterbukidnon.org>; development stays on `*.workers.dev` (decision D7).
-**Cloudflare Workers Builds** (the dashboard's Git integration) builds and deploys, so the
-repository holds no Cloudflare token and no deploy workflow.
+<https://budget.betterbukidnon.org> (decision D7). **Cloudflare Workers Builds** (the
+dashboard's Git integration) builds and deploys, so the repository holds no Cloudflare
+token and no deploy workflow.
 
-| Worker | Role | Production branch | Build command | Deploy command | URL |
-| --- | --- | --- | --- | --- | --- |
-| `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
-| `budget-bukidnon` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address) |
+| Worker | Production branch | Build command | Deploy command | URL |
+| --- | --- | --- | --- | --- |
+| `budget-bukidnon` | `main` | `npm run build && npm run check` | `npx wrangler deploy` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address) |
 
-Both connect to `Better-Bukidnon/budget` with root directory `/`, through the Cloudflare
-Workers and Pages GitHub app installed on the Better-Bukidnon organization. The production
-Worker was renamed from `bukidnon-transparency-portal-production` to `budget-bukidnon` on
-2026-11-03; it has no `workers.dev` address, so only the Custom Domain is affected. The
-development Worker keeps its original name: renaming it would change its `workers.dev` URL.
+It connects to `Better-Bukidnon/budget` with root directory `/`, through the Cloudflare
+Workers and Pages GitHub app installed on the Better-Bukidnon organization.
 
-Every other branch gets a preview build on the development Worker. Workers Builds runs
-the build command, then the preview command `npx wrangler preview`, and posts the
-branch's Preview URL and a check on the pull request. `wrangler preview` refuses to run
-without a `previews` block in `wrangler.jsonc`, which is why an empty one is there.
-On a Preview URL, client-side routes such as `/gaa` load in a browser, but a request
-without `Sec-Fetch-Mode: navigate` (plain `curl`, `fetch`) gets a 404. The development
-and production URLs serve `index.html` either way.
+It is the only Worker. Until 2026-11-03 there were two: a development Worker,
+`bukidnon-transparency-portal`, built from `develop` and serving Preview URLs for other
+branches, and the production Worker, `bukidnon-transparency-portal-production`, configured
+under `env.production`. The development Worker was deleted, the production one was renamed
+`budget-bukidnon`, and its config moved to the top level of `wrangler.jsonc`. `develop`
+and work branches are now checked by CI only.
 
-- `wrangler.jsonc` names the development Worker at the top level and the production Worker
-  under `env.production`. A plain `wrangler deploy` (or the template's
-  `npm run deploy:cloudflare`) therefore goes to development, never to the public portal.
-- Keep those names equal to the Workers' names in the dashboard. When they differ,
-  Workers Builds opens a pull request to rename them.
+- `wrangler.jsonc` has no `env` block, so the deploy command has no `--env`. Passing
+  `--env production` now deploys to a new Worker named `budget-bukidnon-production` and
+  moves the domain to it: wrangler only warns that the environment is missing, then
+  appends the environment's name to the Worker's name.
+- Keep `name` equal to the Worker's name in the dashboard. When they differ, Workers
+  Builds opens a pull request to rename it.
+- `npm run deploy:cloudflare` (or a plain `wrangler deploy`) deploys the public portal.
 - `npm run check` is part of the build command, so a failed check stops the deploy. It
   queries the live Budget API, so a Budget API outage also blocks deploys.
-- `--env=""` selects the top-level (development) config. Without it, wrangler warns that
-  an `env` block exists but no environment was chosen.
 - The build image runs Node 24 by default and CI runs Node 22. Both satisfy `engines`.
-- The development portal is not for the public.
+- Preview builds are off. Turning on **Builds for Preview branches** (preview command
+  `npx wrangler preview`) would post a Preview URL on each pull request; `wrangler preview`
+  refuses to run without the `previews` block in `wrangler.jsonc`, which is why an empty
+  one is there. On a Preview URL, client-side routes such as `/gaa` load in a browser, but
+  a request without `Sec-Fetch-Mode: navigate` (plain `curl`, `fetch`) gets a 404.
 - Workers Builds has no schedule, but a **Deploy Hook** builds a branch on an HTTP POST.
   The production Worker has one named `release` for `main` (**Settings → Builds → Deploy
   Hooks**). Its URL is the credential, so it stays in the dashboard. It rebuilds
   production without a commit to `main`, and a scheduler calling it is one way to do the
   nightly refresh (`snapshot → check → build → deploy`, #25).
-- When a release merges to `main`, the development Worker also builds a preview of `main`
-  (a "main" entry in its branch list). It is not the public portal.
-- `siteUrl` in `portal.config.ts` is the public domain (#9), so every build,
-  development included, writes it as the canonical URL and `og:url`.
-- The domain is a Custom Domain declared under `env.production` in `wrangler.jsonc`, so
-  each production deploy attaches it. The `betterbukidnon.org` zone is on the same
+- `siteUrl` in `portal.config.ts` is the public domain (#9), so every build, local ones
+  included, writes it as the canonical URL and `og:url`.
+- The domain is a Custom Domain declared in `wrangler.jsonc`, so each deploy attaches it. The `betterbukidnon.org` zone is on the same
   Cloudflare account. In Workers Builds, wrangler runs without a terminal and takes a
   domain that another Worker holds without asking. The domain was first attached to the
   development Worker by hand; the first production deploy moved it on 2026-11-01 with no
@@ -226,15 +221,11 @@ deploy, because the import form fills in defaults that are wrong here and deploy
 
 - **Production branch** defaults to the repository's default branch, `develop`. Set `main`.
 - **Build command** defaults to `npm run build`. Use `npm run build && npm run check`.
-- **Deploy command** defaults to `npx wrangler deploy`. Use
-  `npx wrangler deploy --env production`. Without `--env`, wrangler deploys the top-level
-  (development) config under the production Worker's name: the workers.dev address is
-  turned on, the domain is not attached, and Workers Builds offers a pull request to rename
-  the Worker in `wrangler.jsonc`. Close that pull request; don't merge it.
-- **Preview builds**: off, since the development Worker already previews other branches.
+- **Deploy command** defaults to `npx wrangler deploy`, which is right. Don't add `--env`.
+- **Worker name** must be `budget-bukidnon`, the `name` in `wrangler.jsonc`.
 
 Then build `main` with the `release` Deploy Hook. Its log should end with
 `budget.betterbukidnon.org (custom domain)`.
 
-To deploy development by hand (rarely needed): `npx wrangler login`, then
-`npm run build && npx wrangler deploy --env=""`.
+To deploy by hand (rarely needed): `npx wrangler login`, then `npm run deploy:cloudflare`
+from an up-to-date `main`.

@@ -2,27 +2,21 @@
   // Cloudflare Workers, static assets only: no Worker code, no bindings.
   // `npm run deploy:cloudflare` builds and deploys. Rename before deploying.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "bukidnon-transparency-portal",
+  // Bukidnon: one Worker, the public portal, built from `main` by Workers Builds with
+  // `npx wrangler deploy`. See docs/architecture.md#deploy.
+  "name": "budget-bukidnon",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
     // Client-side routes (/districts, /projects/...) serve index.html.
     "not_found_handling": "single-page-application"
   },
-  // Bukidnon: the top level is the development Worker (built from `develop`); production
-  // is built from `main` with `npx wrangler deploy --env production`.
-  // See docs/architecture.md#deploy.
-  // Other branches get a Preview URL from Workers Builds (`npx wrangler preview`), which
-  // requires this block, even empty.
-  "previews": {},
-  "env": {
-    "production": {
-      "name": "budget-bukidnon",
-      // The public portal's address. Each deploy attaches this Custom Domain to the
-      // production Worker, taking it from any other Worker that has it, and the
-      // workers.dev address stays off, so the domain is the only public address.
-      "routes": [{ "pattern": "budget.betterbukidnon.org", "custom_domain": true }],
-      "workers_dev": false
-    }
-  }
+  // The public portal's address. Each deploy attaches this Custom Domain to the Worker,
+  // taking it from any other Worker that has it, and the workers.dev address stays off,
+  // so the domain is the only public address.
+  "routes": [{ "pattern": "budget.betterbukidnon.org", "custom_domain": true }],
+  "workers_dev": false,
+  // `npx wrangler preview` (Preview URLs for other branches) requires this block, even
+  // empty. Preview builds are off for now.
+  "previews": {}
 }

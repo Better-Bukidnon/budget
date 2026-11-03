@@ -183,7 +183,7 @@ All seven were decided on 2026-10-31 (#2). To reopen one, edit its row and say w
 | D4 | **Maps** | No basemap (SVG points, outlines if bettergov.ph serves them) · a tile provider (an off-domain request) | **Decided 2026-10-31:** no basemap. SVG points; town outlines only from a bettergov.ph host, drawn from a build-time copy ([map-shapes.md](data-sources/map-shapes.md)) once BetterGov allows it (#3). |
 | D5 | **Show political-family ("bloc") data** from the officials API? | Officials list only · include blocs | **Decided 2026-10-31:** officials list only. Blocs would need their own methodology page first. |
 | D6 | **Languages** | English · English + Binisaya/Cebuano labels · + Filipino | **Decided 2026-10-31:** English at launch; Binisaya/Cebuano for navigation and key labels in Phase 4 (#34). No Filipino translation. |
-| D7 | **Domain and hosting account** | `*.workers.dev` · own domain | **Decided 2026-10-31, revised 2026-11-01:** the project's Cloudflare account, deployed by Workers Builds. The public portal is at `budget.betterbukidnon.org` from v0.1 (#10), not from launch (#36); development stays on `*.workers.dev`. |
+| D7 | **Domain and hosting account** | `*.workers.dev` · own domain | **Decided 2026-10-31, revised 2026-11-01:** the project's Cloudflare account, deployed by Workers Builds. The public portal is at `budget.betterbukidnon.org` from v0.1 (#10), not from launch (#36). Revised 2026-11-03: one Worker, `budget-bukidnon`, built from `main`; the `*.workers.dev` development Worker was deleted. |
 
 ## Risks
 
