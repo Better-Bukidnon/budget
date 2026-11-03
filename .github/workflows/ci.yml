@@ -1,5 +1,6 @@
 # Quality gates for every change headed to develop or main.
-# A red run means don't merge (no branch protection on this private repo; see #5).
+# A red run blocks the merge: the "Protect develop and main" ruleset requires this job
+# (docs/architecture.md#quality-gates-ci). Renaming the job breaks that rule.
 name: CI
 
 on:
