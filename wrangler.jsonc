@@ -17,7 +17,7 @@
   "previews": {},
   "env": {
     "production": {
-      "name": "bukidnon-transparency-portal-production",
+      "name": "budget-bukidnon",
       // The public portal's address. Each deploy attaches this Custom Domain to the
       // production Worker, taking it from any other Worker that has it, and the
       // workers.dev address stays off, so the domain is the only public address.

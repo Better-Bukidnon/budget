@@ -51,7 +51,7 @@ gh repo set-default Better-Bukidnon/budget
 | Branch | Role | Deploys to |
 | --- | --- | --- |
 | `develop` (default) | Integration; every PR targets it | Development: the `bukidnon-transparency-portal` Worker ([Deploy](#deploy)) |
-| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `bukidnon-transparency-portal-production` Worker, created at v0.1 (2026-11-01) |
+| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `budget-bukidnon` Worker, created at v0.1 (2026-11-01) as `bukidnon-transparency-portal-production` |
 | `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | A Preview URL per branch on the development Worker, posted on the PR |
 
 The nightly data refresh (`snapshot → check → build → deploy`) runs against `main` for
@@ -167,12 +167,13 @@ repository holds no Cloudflare token and no deploy workflow.
 | Worker | Role | Production branch | Build command | Deploy command | URL |
 | --- | --- | --- | --- | --- | --- |
 | `bukidnon-transparency-portal` | Development | `develop` | `npm run build && npm run check` | `npx wrangler deploy --env=""` | <https://bukidnon-transparency-portal.dmncdlprt.workers.dev> |
-| `bukidnon-transparency-portal-production` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address) |
+| `budget-bukidnon` | Public portal | `main` | `npm run build && npm run check` | `npx wrangler deploy --env production` | <https://budget.betterbukidnon.org> (Custom Domain; no workers.dev address) |
 
 Both connect to `Better-Bukidnon/budget` with root directory `/`, through the Cloudflare
-Workers and Pages GitHub app installed on the Better-Bukidnon organization. The Worker names
-predate the repo's move and stay as they are: renaming the development Worker would change
-its `workers.dev` URL.
+Workers and Pages GitHub app installed on the Better-Bukidnon organization. The production
+Worker was renamed from `bukidnon-transparency-portal-production` to `budget-bukidnon` on
+2026-11-03; it has no `workers.dev` address, so only the Custom Domain is affected. The
+development Worker keeps its original name: renaming it would change its `workers.dev` URL.
 
 Every other branch gets a preview build on the development Worker. Workers Builds runs
 the build command, then the preview command `npx wrangler preview`, and posts the
