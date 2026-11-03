@@ -1,0 +1,66 @@
+# Records each successful Cloudflare build of develop and main as a GitHub deployment, so
+# the repository's Deployments panel lists "production" and "development" with their URLs.
+# Cloudflare Workers Builds does the deploying and only posts a check run; this workflow
+# reads that check run and deploys nothing. See docs/architecture.md#deploy.
+#
+# GitHub runs check_run workflows from the default branch (develop) only, for check runs
+# on any branch, so this file takes effect once it is on develop.
+name: Record deployments
+
+on:
+  check_run:
+    types: [completed]
+
+permissions:
+  deployments: write
+
+jobs:
+  record:
+    name: Record deployment
+    if: >-
+      github.event.check_run.name == 'Workers Builds: budget-bukidnon' &&
+      github.event.check_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create the deployment and mark it successful
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.check_run.check_suite.head_branch }}
+          SUITE_ID: ${{ github.event.check_run.check_suite.id }}
+          SHA: ${{ github.event.check_run.head_sha }}
+          LOG_URL: ${{ github.event.check_run.details_url }}
+        run: |
+          # The event normally carries the branch; if not, ask the check suite.
+          if [ -z "$BRANCH" ]; then
+            BRANCH=$(gh api "repos/$REPO/check-suites/$SUITE_ID" --jq '.head_branch // ""')
+          fi
+
+          if [ "$BRANCH" = main ]; then
+            ENV=production
+            URL=https://budget.betterbukidnon.org
+            IS_PROD=true
+          elif [ "$BRANCH" = develop ]; then
+            ENV=development
+            URL=https://develop-budget-bukidnon.dmncdlprt.workers.dev
+            IS_PROD=false
+          else
+            echo "Preview of '${BRANCH:-unknown branch}', not develop or main: nothing to record."
+            exit 0
+          fi
+
+          # required_contexts is empty: the build already passed, so GitHub must not wait
+          # for (or re-check) any status before recording it.
+          id=$(jq -n --arg ref "$SHA" --arg env "$ENV" --argjson prod "$IS_PROD" \
+              '{ref: $ref, environment: $env, production_environment: $prod,
+                auto_merge: false, required_contexts: [],
+                description: "Cloudflare Workers Builds: budget-bukidnon"}' \
+            | gh api "repos/$REPO/deployments" --input - --jq .id)
+
+          jq -n --arg url "$URL" --arg log "$LOG_URL" \
+              '{state: "success", environment_url: $url, log_url: $log,
+                auto_inactive: true}' \
+            | gh api "repos/$REPO/deployments/$id/statuses" --input - > /dev/null
+
+          echo "Recorded deployment $id: $ENV at $URL ($SHA)"
