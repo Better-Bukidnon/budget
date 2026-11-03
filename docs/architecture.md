@@ -161,7 +161,7 @@ Cloudflare Workers static assets, as the Bohol sample is deployed: no Worker cod
 bindings, SPA fallback in `wrangler.jsonc`. The public portal is at
 <https://budget.betterbukidnon.org> (decision D7). **Cloudflare Workers Builds** (the
 dashboard's Git integration) builds and deploys, so the repository holds no Cloudflare
-token and no deploy workflow.
+token and no deploy workflow (one workflow only records deployments; see below).
 
 | Worker | Production branch | Build command | Deploy command | URL |
 | --- | --- | --- | --- | --- |
@@ -201,6 +201,13 @@ name its trigger). Deleting a Worker in the dashboard does not delete its trigge
   itself has no workers.dev address. On a Preview URL, client-side routes such as `/gaa`
   load in a browser, but a request without `Sec-Fetch-Mode: navigate` (plain `curl`,
   `fetch`) gets a 404.
+- **The repository's Deployments panel** lists `production` (<https://budget.betterbukidnon.org>)
+  and `development` (<https://develop-budget-bukidnon.dmncdlprt.workers.dev>). Workers
+  Builds only posts a check run, so `.github/workflows/deployments.yml` turns each
+  successful `Workers Builds: budget-bukidnon` check on `main` or `develop` into a GitHub
+  deployment, linked to the build log. It records; it deploys nothing. GitHub runs
+  `check_run` workflows from the default branch only, so that file must stay on `develop`.
+  Previews of other branches are not recorded.
 - Workers Builds has no schedule, but a **Deploy Hook** builds a branch on an HTTP POST.
   The production Worker has one named `release` for `main` (**Settings → Builds → Deploy
   Hooks**). Its URL is the credential, so it stays in the dashboard. It rebuilds
