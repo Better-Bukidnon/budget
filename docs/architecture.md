@@ -50,9 +50,9 @@ gh repo set-default Better-Bukidnon/budget
 
 | Branch | Role | Deploys to |
 | --- | --- | --- |
-| `develop` (default) | Integration; every PR targets it | Nothing; CI only. Run it locally with `npm run dev` |
-| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `budget-bukidnon` Worker ([Deploy](#deploy)) |
-| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | Nothing; CI only |
+| `develop` (default) | Integration; every PR targets it | Development: a Preview URL on the `budget-bukidnon` Worker ([Deploy](#deploy)) |
+| `main` | Production; changes only arrive by a release PR from `develop` | The public portal: the `budget-bukidnon` Worker |
+| `feature/*`, `fix/*`, `docs/*`, `chore/*` | Short-lived work branches off `develop` | A Preview URL per branch on the same Worker, posted on the PR |
 
 The nightly data refresh (`snapshot → check → build → deploy`) runs against `main`.
 
@@ -175,7 +175,11 @@ It is the only Worker. Until 2026-11-03 there were two: a development Worker,
 branches, and the production Worker, `bukidnon-transparency-portal-production`, configured
 under `env.production`. The development Worker was deleted, the production one was renamed
 `budget-bukidnon`, and its config moved to the top level of `wrangler.jsonc`. `develop`
-and work branches are now checked by CI only.
+and work branches now deploy as Preview URLs of that Worker (below). The development
+Worker's build trigger outlived it and failed every push ("This Worker does not exist on
+your account") until it was deleted through the Workers Builds API
+(`DELETE /accounts/{account_id}/builds/triggers/{trigger_uuid}`; a failed build's details
+name its trigger). Deleting a Worker in the dashboard does not delete its trigger.
 
 - `wrangler.jsonc` has no `env` block, so the deploy command has no `--env`. Passing
   `--env production` now deploys to a new Worker named `budget-bukidnon-production` and
@@ -187,11 +191,16 @@ and work branches are now checked by CI only.
 - `npm run check` is part of the build command, so a failed check stops the deploy. It
   queries the live Budget API, so a Budget API outage also blocks deploys.
 - The build image runs Node 24 by default and CI runs Node 22. Both satisfy `engines`.
-- Preview builds are off. Turning on **Builds for Preview branches** (preview command
-  `npx wrangler preview`) would post a Preview URL on each pull request; `wrangler preview`
-  refuses to run without the `previews` block in `wrangler.jsonc`, which is why an empty
-  one is there. On a Preview URL, client-side routes such as `/gaa` load in a browser, but
-  a request without `Sec-Fetch-Mode: navigate` (plain `curl`, `fetch`) gets a 404.
+- **Development is a Preview URL.** With **Builds for Preview branches** on (Settings →
+  Builds → Previews Base; build command `npm run build && npm run check`, preview command
+  `npx wrangler preview`), every branch other than `main`, `develop` included, is built
+  and gets a Preview URL on `dmncdlprt.workers.dev`, posted on the pull request and in
+  the build log. The `develop` one is the development site. `wrangler.jsonc` sets
+  `preview_urls: true` (the default is off) and has the `previews` block that
+  `wrangler preview` refuses to run without. `workers_dev` stays `false`, so production
+  itself has no workers.dev address. On a Preview URL, client-side routes such as `/gaa`
+  load in a browser, but a request without `Sec-Fetch-Mode: navigate` (plain `curl`,
+  `fetch`) gets a 404.
 - Workers Builds has no schedule, but a **Deploy Hook** builds a branch on an HTTP POST.
   The production Worker has one named `release` for `main` (**Settings → Builds → Deploy
   Hooks**). Its URL is the credential, so it stays in the dashboard. It rebuilds

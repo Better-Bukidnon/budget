@@ -16,7 +16,9 @@
   // so the domain is the only public address.
   "routes": [{ "pattern": "budget.betterbukidnon.org", "custom_domain": true }],
   "workers_dev": false,
-  // `npx wrangler preview` (Preview URLs for other branches) requires this block, even
-  // empty. Preview builds are off for now.
+  // Every other branch, `develop` included, gets a Preview URL on workers.dev from
+  // Workers Builds (`npx wrangler preview`). That is the development site; production
+  // stays off workers.dev. `wrangler preview` requires the `previews` block, even empty.
+  "preview_urls": true,
   "previews": {}
 }
